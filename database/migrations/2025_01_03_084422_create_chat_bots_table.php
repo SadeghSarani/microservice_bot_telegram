@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('chat_bots', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('chat_id');
-            $table->unsignedBigInteger('context');
-            $table->unsignedBigInteger('answer');
+            $table->unsignedBigInteger('service_id');
+            $table->text('context');
+            $table->text('answer')->nullable();
             $table->timestamps();
         });
     }

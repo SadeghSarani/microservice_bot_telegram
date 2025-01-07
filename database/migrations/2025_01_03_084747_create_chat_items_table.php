@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('chat_items', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('chat_id');
+            $table->text('key');
+            $table->text('value');
             $table->timestamps();
         });
     }

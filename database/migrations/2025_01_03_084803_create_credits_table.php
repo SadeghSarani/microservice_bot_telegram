@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('credits', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('credit');
             $table->timestamps();
         });
     }

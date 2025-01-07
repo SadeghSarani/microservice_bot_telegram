@@ -1,0 +1,44 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8000:80
+    networks:
+      - calerino
+    depends_on:
+      - mariadb
+    volumes:
+      - ./:/var/www/html
+
+  mariadb:
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345678
+    networks:
+      - calerino
+    volumes:
+      - ./mariadb_data:/var/lib/mysql
+  init:
+    image: busybox
+    volumes:
+      - ./mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
+    command: ["cp", "/etc/mysql/mysql.conf.d/mysqld.cnf", "/mnt/"]
+    depends_on:
+      - mariadb
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - '8585:80'
+    environment:
+      - PMA_HOST=mariadb
+    networks:
+      - calerino
+
+networks:
+  calerino:
+    driver: bridge
