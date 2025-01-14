@@ -4,7 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Credit extends Model
+class TelegramUserLocation extends Model
 {
     protected $guarded = [];
+    
 }

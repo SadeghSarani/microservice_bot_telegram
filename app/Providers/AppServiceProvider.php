@@ -14,7 +14,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton('telegramBot', function () {
+            return new \App\Service\TelegramBot();
+        });
     }
 
     /**

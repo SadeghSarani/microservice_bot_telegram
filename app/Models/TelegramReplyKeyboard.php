@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Credit extends Model
+class TelegramReplyKeyboard extends Model
 {
     protected $guarded = [];
 }

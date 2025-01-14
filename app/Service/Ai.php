@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Models\ChatBot;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use MoeMizrak\LaravelOpenrouter\DTO\ChatData;
 use MoeMizrak\LaravelOpenrouter\DTO\MessageData;
 use MoeMizrak\LaravelOpenrouter\Facades\LaravelOpenRouter;
@@ -15,7 +16,7 @@ class Ai
     public static function sendMessage($message, $prompt, $chatBotId = null)
     {
 
-        $model = 'google/gemini-2.0-flash-thinking-exp:free';
+        $model = 'google/gemini-2.0-flash-exp:free';
 
         $userData = new MessageData(
             [
@@ -37,20 +38,15 @@ class Ai
             'model' => $model
         ]);
 
+
         $response = LaravelOpenRouter::chatRequest($chatData);
 
         if ($chatBotId != null) {
             ChatBot::where('id', $chatBotId)->update([
-                'answer' => $response->choices[0]['message']['context'] ?? null,
+                'answer' => $response->choices[0]['message']['content'],
             ]);
         }
 
-        if (!isset($response->choices[0]['message']['context']) || !isset($response->choices[0])) {
-            return false;
-        }
-
-        return $response->choices[0]['message']['context'];
-
-
+        return $response->choices[0]['message']['content'];
     }
 }
