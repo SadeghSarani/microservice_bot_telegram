@@ -15,6 +15,8 @@ new class extends Component {
 
     public bool $createServiceModal = false;
 
+    public bool $cerateButtonServiceModal = false;
+
     public array $sortBy = ['column' => 'name', 'direction' => 'asc'];
 
     public $service_name = '';
@@ -93,7 +95,7 @@ new class extends Component {
 
     <x-button class="btn-ghost  text-red-500" label="ساخت سرویس جدید" @click="$wire.createServiceModal = true"/>
     <x-button class="btn-ghost  text-blue-500" label="ساخت دکمه جدید برای تلگرام"
-              @click="$wire.createServiceModal = true"/>
+              @click="$wire.cerateButtonServiceModal = true"/>
 
     <x-modal wire:model="createServiceModal" title="ساخت سرویس">
         <x-input label="Name" wire:model="service_name" placeholder="نام سرویس"/>
@@ -106,7 +108,7 @@ new class extends Component {
     </x-modal>
 
 
-    <x-modal wire:model="createServiceModal" title="ساخت سرویس">
+    <x-modal wire:model="cerateButtonServiceModal" title="ساخت سرویس">
         <x-input label="نام دکمه" wire:model="button_name" placeholder="متن نمایش دکمه"/>
         <x-select
                 label="سرویس مربوطه"
