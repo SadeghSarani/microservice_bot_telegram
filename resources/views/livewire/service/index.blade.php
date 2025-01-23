@@ -18,6 +18,8 @@ new class extends Component {
     public bool $telegramModal  = false;
     public bool $changeModalAi = false;
 
+    public bool $cerateButtonServiceModal = false;
+
     public array $sortBy = ['column' => 'name', 'direction' => 'asc'];
 
     public $service_name = '';
@@ -97,7 +99,7 @@ new class extends Component {
 
     <x-button class="btn-ghost  text-red-500" label="ساخت سرویس جدید" @click="$wire.createServiceModal = true"/>
     <x-button class="btn-ghost  text-blue-500" label="ساخت دکمه جدید برای تلگرام"
-              @click="$wire.telegramModal = true"/>
+              @click="$wire.createServiceModal = true"/>
 
     <x-modal wire:model="createServiceModal" title="ساخت سرویس">
         <x-input label="Name" wire:model="service_name" placeholder="نام سرویس"/>
