@@ -16,7 +16,7 @@ class Ai
     public static function sendMessage($message, $prompt, $chatBotId = null)
     {
 
-        $model = 'google/gemini-2.0-flash-exp:free';
+        $model = \App\Models\Ai::query()->first()['name'];
 
         $userData = new MessageData(
             [

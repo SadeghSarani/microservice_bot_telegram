@@ -44,13 +44,13 @@
                     </x-list-item>
 
                     <x-menu-separator />
+
+                    <x-menu-item title="prompt" icon="o-chat-bubble-bottom-center-text" link="/admin/prompts" />
+                    <x-menu-item title="service" icon="o-archive-box" link="/admin/service" />
+                    <x-menu-item title="telegram" icon="o-chat-bubble-left" link="/admin/buttons" />
+                    <x-menu-item title="ai" icon="o-chat-bubble-left" link="/admin/ai" />
                 @endif
 
-                <x-menu-item title="Hello" icon="o-sparkles" link="/" />
-                <x-menu-sub title="Settings" icon="o-cog-6-tooth">
-                    <x-menu-item title="prompt" icon="o-wifi" link="/prompts" />
-                    <x-menu-item title="service" icon="o-archive-box" link="/service" />
-                </x-menu-sub>
             </x-menu>
         </x-slot:sidebar>
 
