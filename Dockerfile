@@ -21,13 +21,5 @@ EXPOSE 80
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-RUN bash -c 'echo -e run script _________________________________'
-
-RUN mkdir -p /scripts
-COPY run.sh /scripts
-WORKDIR /scripts
-RUN chmod +x run.sh
-RUN ./run.sh
 
 CMD ["apache2-foreground"]
-

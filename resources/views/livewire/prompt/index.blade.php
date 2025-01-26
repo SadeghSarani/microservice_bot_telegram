@@ -46,7 +46,9 @@ new class extends Component
     // Delete action
     public function delete($id): void
     {
-        $this->warning("Will delete #$id", 'It is fake.', position: 'toast-bottom');
+        Prompt::query()->where('id', $id)->delete();
+
+        $this->success('prompt deleted success', position: 'toast-bottom');
     }
 
     // Table headers
@@ -174,19 +176,19 @@ new class extends Component
             <x-button icon="o-trash" wire:click="delete({{ $prompt['id'] }})" wire:confirm="Are you sure?" spinner
                       class="btn-ghost btn-sm text-red-500"/>
             <x-button icon="o-wrench" wire:click="getPrompt({{ $prompt['id'] }})"
-                          class="btn-ghost btn-sm text-yellow-500"/>
-                @endscope
-            </x-table>
-        </x-card>
+                      class="btn-ghost btn-sm text-yellow-500"/>
+            @endscope
+        </x-table>
+    </x-card>
 
-        <!-- FILTER DRAWER -->
-        <x-drawer wire:model="drawer" title="Filters" right separator with-close-button class="lg:w-1/3">
-            <x-input placeholder="Search..." wire:model.live.debounce="search" icon="o-magnifying-glass"
-                     @keydown.enter="$wire.drawer = false"/>
+    <!-- FILTER DRAWER -->
+    <x-drawer wire:model="drawer" title="Filters" right separator with-close-button class="lg:w-1/3">
+        <x-input placeholder="Search..." wire:model.live.debounce="search" icon="o-magnifying-glass"
+                 @keydown.enter="$wire.drawer = false"/>
 
-            <x-slot:actions>
-                <x-button label="Reset" icon="o-x-mark" wire:click="clear" spinner/>
-                <x-button label="Done" icon="o-check" class="btn-primary" @click="$wire.drawer = false"/>
-            </x-slot:actions>
-        </x-drawer>
+        <x-slot:actions>
+            <x-button label="Reset" icon="o-x-mark" wire:click="clear" spinner/>
+            <x-button label="Done" icon="o-check" class="btn-primary" @click="$wire.drawer = false"/>
+        </x-slot:actions>
+    </x-drawer>
 </div>

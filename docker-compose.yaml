@@ -4,7 +4,19 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - 8000:80
+      - 80:80
+    networks:
+      - calerino
+    depends_on:
+      - mariadb
+    volumes:
+      - ./:/var/www/html
+
+  queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: php artisan queue:work
     networks:
       - calerino
     depends_on:
@@ -21,13 +33,6 @@ services:
       - calerino
     volumes:
       - ./mariadb_data:/var/lib/mysql
-  init:
-    image: busybox
-    volumes:
-      - ./mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
-    command: ["cp", "/etc/mysql/mysql.conf.d/mysqld.cnf", "/mnt/"]
-    depends_on:
-      - mariadb
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin

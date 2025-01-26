@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Chat\ChatCreateRequest;
+use App\Jobs\AiJobSendMessage;
 use App\Models\Credit;
 use App\Models\TelegramReplyKeyboard;
 use App\Repositories\ChatBotRepository;
@@ -64,9 +65,14 @@ class ChatBotController extends Controller
             $textPrompt .= $prompt->prompt;
         });
 
-        $reply = Ai::sendMessage($createChat->context, $textPrompt, $createChat->id);
+        AiJobSendMessage::dispatch([
+            'chat' => $createChat->context,
+            'prompt' => $textPrompt,
+            'chat_id' => $createChat->id,
+            'user_telegram_id' => $telegram_user_id,
+        ]);
 
-        $this->telegramBot->send($createChat->user_id, $reply);
+        $this->telegramBot->send($createChat->user_id, 'کاربر گرامی سوال شما دریافت و بعد از پردازش نتیجه برای شما ارسال میشود');
     }
 
     private function creditActions($telegram_user_id)

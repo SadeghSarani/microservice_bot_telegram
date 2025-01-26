@@ -39,14 +39,18 @@ class Ai
         ]);
 
 
-        $response = LaravelOpenRouter::chatRequest($chatData);
+        try {
+            $response = LaravelOpenRouter::chatRequest($chatData);
 
-        if ($chatBotId != null) {
-            ChatBot::where('id', $chatBotId)->update([
-                'answer' => $response->choices[0]['message']['content'],
-            ]);
+            if ($chatBotId != null) {
+                ChatBot::where('id', $chatBotId)->update([
+                    'answer' => $response->choices[0]['message']['content'],
+                ]);
+            }
+
+            return $response->choices[0]['message']['content'];
+        }catch (\Exception $exception){
+            throw new \Exception($exception->getMessage());
         }
-
-        return $response->choices[0]['message']['content'];
     }
 }
