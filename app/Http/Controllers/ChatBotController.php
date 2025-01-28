@@ -10,6 +10,7 @@ use App\Repositories\ChatBotRepository;
 use App\Service\Ai;
 use App\Service\TelegramBot;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Log;
 
 class ChatBotController extends Controller
@@ -61,18 +62,23 @@ class ChatBotController extends Controller
 
         $textPrompt = '';
 
+
+
         collect($createChat->service->prompt)->map(function ($prompt) use (&$textPrompt) {
             $textPrompt .= $prompt->prompt;
         });
+
+
 
         AiJobSendMessage::dispatch([
             'chat' => $createChat->context,
             'prompt' => $textPrompt,
             'chat_id' => $createChat->id,
             'user_telegram_id' => $telegram_user_id,
-        ]);
+        ])->delay(now()->addMinute());
 
-        $this->telegramBot->send($createChat->user_id, 'کاربر گرامی سوال شما دریافت و بعد از پردازش نتیجه برای شما ارسال میشود');
+        $this->telegramBot->send($telegram_user_id, 'کاربر گرامی سوال شما دریافت و بعد از پردازش نتیجه برای شما ارسال میشود');
+        return true;
     }
 
     private function creditActions($telegram_user_id)
