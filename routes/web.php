@@ -26,3 +26,7 @@ Route::any('/logout', function () {
     \Illuminate\Support\Facades\Auth::logout();
     return redirect('admin/login');
 })->withoutMiddleware(AdminMiddleware::class);
+
+
+
+Route::any('pay/calback',[PayController::class,'calback'])->name('pay.calback');
