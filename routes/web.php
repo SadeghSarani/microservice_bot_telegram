@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PayController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
@@ -17,6 +18,10 @@ Volt::route('admin/buttons', 'telegram.index')
 
 Volt::route('admin/ai', 'ai.index')
     ->middleware(AdminMiddleware::class);
+
+Volt::route('admin/plans', 'plans.index')
+    ->middleware(AdminMiddleware::class);
+
 
 Volt::route('admin/login', 'users.index')
     ->name('login')
