@@ -49,6 +49,7 @@
                     <x-menu-item title="service" icon="o-archive-box" link="/admin/service" />
                     <x-menu-item title="telegram" icon="o-chat-bubble-left" link="/admin/buttons" />
                     <x-menu-item title="ai" icon="o-chat-bubble-left" link="/admin/ai" />
+                    <x-menu-item title="plans" icon="o-chat-bubble-left" link="/admin/plans" />
                 @endif
 
             </x-menu>
