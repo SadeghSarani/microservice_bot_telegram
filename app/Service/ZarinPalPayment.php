@@ -13,7 +13,7 @@ use Zarinpal\Zarinpal;
 class ZarinPalPayment
 {
 
-    private $url = 'https://sandbox.zarinpal.com/pg/StartPay/';
+    private $url = 'https://sandbox.zarinpal.com/pg/StartPay';
     const VERIFY_API = '/v4/payment/verify.json';
     const START_PAY = '/StartPay/';
     const PAYMENT_API = '/v4/payment/request.json';
@@ -27,6 +27,9 @@ class ZarinPalPayment
             'callback_url' => route('pay.calback'),
             'amount' => $data['amount'],
             'description' => $data['description'],
+            'metadata' => [
+                'order_id' => $data['id'],
+            ],
         ];
 
         $sandbox = true;

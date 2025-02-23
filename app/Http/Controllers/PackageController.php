@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Package;
+use App\Models\UserPay;
 use App\Service\TelegramBot;
 use App\Service\ZarinPalPayment;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Zarinpal\Zarinpal;
@@ -19,10 +21,6 @@ class PackageController extends Controller
 
     public function list($user_id, $message)
     {
-        $user_id = 854529351;
-
-
-        Log::error('data : ', [$user_id, $message]);
 
         $packages = Package::all()->toArray();
 
@@ -31,7 +29,7 @@ class PackageController extends Controller
         foreach ($packages as $package) {
             $data[] = [
                 'text' => $package['name'],
-                'callback_data' => 'package'. '-' . 'getPackage' . '-' . $package['id'],
+                'callback_data' => 'package' . '-' . 'getPackage' . '-' . $package['id'],
             ];
         }
 
@@ -47,6 +45,25 @@ class PackageController extends Controller
         $urlPayment = $zarinpal->payment([
             'amount' => $package['price'],
             'description' => $package['name'],
+        ]);
+
+        $userPay = UserPay::where('user_id', $user_id)->first();
+
+        if ($userPay != null) {
+            $this->bot->send($user_id, 'کاربر گرامی شما یک پکیج فعال دارید');
+
+            return true;
+        }
+
+        UserPay::updateOrCreate([
+            'user_id' => $user_id,
+        ],[
+            'user_id' => $user_id,
+            'package_id' => $message,
+            'authority' => $urlPayment,
+            'status' => 'pending',
+            'count' => $package['count'],
+            'expired_at' => Carbon::now()->addMonths($package['month']),
         ]);
 
         $message = $package['description'];
