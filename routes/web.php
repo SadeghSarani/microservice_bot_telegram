@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PayController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;

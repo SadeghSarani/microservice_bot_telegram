@@ -20,6 +20,10 @@ class TelegramBot
     {
         $update = Telegram::commandsHandler(true);
 
+        if (isset($update['callback_query'])) {
+            $this->setCommand($update['callback_query'], $update['callback_query']['from']['id']);
+        }
+
 
         if (isset($update['message'])) {
             $message = $update['message'];
@@ -73,8 +77,6 @@ class TelegramBot
 
         $telegram_reply_keyboards = TelegramReplyKeyboard::where('title', $message['text'])->first();
 
-        Log::error('if: ', [isset($message['callback_query']['data'])]);
-        Log::error('new Log all: ', [$allMessage]);
         if (isset($allMessage['callback_query']['data'])) {
             $classInstance = new PackageController();
             $classInstance->package($message['from']['id'], $allMessage['callback_query']['data']);
@@ -129,7 +131,6 @@ class TelegramBot
             ]);
         }
 
-
         Telegram::sendMessage([
             'chat_id' => $user_id,
             'text' => $text,
@@ -137,7 +138,7 @@ class TelegramBot
         ]);
     }
 
-    public function createButtonInline($user_id, $data)
+    public function createButtonInline($user_id, $data, $text)
     {
         $telegram = new Api(env('TELEGRAM_BOT_TOKEN'));
 
@@ -148,9 +149,27 @@ class TelegramBot
         ];
 
         $telegram->sendMessage([
-            'chat_id' => 854529351,
-            'text' => 'یکی از پیکج ها رو انتخاب کن',
+            'chat_id' => $user_id,
+            'text' => $text,
             'reply_markup' => json_encode($keyboard)
         ]);
+    }
+
+    private function setCommand($callback_query, $user_id)
+    {
+        $telegram = new Api(env('TELEGRAM_BOT_TOKEN'));
+        [$controller, $function, $data] = explode('-', $callback_query['data']);
+
+        switch ($controller) {
+            case 'package' :
+                $class = new PackageController();
+                $class->$function($user_id, $data);
+            break;
+            default :
+                $telegram->sendMessage([
+                    'chat_id' => $user_id,
+                    'text' => 'انتخاب نادرست '
+                ]);
+        }
     }
 }

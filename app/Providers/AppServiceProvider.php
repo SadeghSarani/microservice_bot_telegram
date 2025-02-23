@@ -25,8 +25,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        
-        // URL::forceScheme('https');
+        URL::forceScheme('https');
         Scramble::routes(function (Route $route) {
             return Str::startsWith($route->uri, 'api/');
         });

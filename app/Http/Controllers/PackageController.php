@@ -31,16 +31,15 @@ class PackageController extends Controller
         foreach ($packages as $package) {
             $data[] = [
                 'text' => $package['name'],
-                'callback_data' => $package['id'],
+                'callback_data' => 'package'. '-' . 'getPackage' . '-' . $package['id'],
             ];
         }
 
-        $this->bot->createButtonInline($user_id, $data);
+        $this->bot->createButtonInline($user_id, $data, 'یکی از پکیج ها را انتخاب نمایید');
     }
 
-    public function package($user_id, $message)
+    public function getPackage($user_id, $message)
     {
-        Log::error('suydaysgadubsjadjashvdjas : ', [$user_id, $message]);
         $package = Package::query()->where('id', $message)->first();
 
         $zarinpal = new ZarinPalPayment();
@@ -50,12 +49,16 @@ class PackageController extends Controller
             'description' => $package['name'],
         ]);
 
-        $this->bot->send($user_id, $package['description']);
+        $message = $package['description'];
+
+        $this->bot->send($user_id, $message);
 
         $this->bot->createButtonInline($user_id, [
-            'text' => 'خرید پکیج',
-            'callback_data' => $urlPayment,
-        ]);
+            [
+                'text' => 'لینک پرداخت',
+                'url' => $urlPayment,
+            ]
+        ], 'روی لینک پرداخت کلیک نمایید (vpn) خود را خاموش نمایید');
 
         return true;
     }
