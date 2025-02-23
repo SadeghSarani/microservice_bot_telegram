@@ -7,9 +7,6 @@ RUN apt-get update && apt-get install -y \
     zlib1g-dev \
     && docker-php-ext-install zip
 
-
-
-
 RUN docker-php-ext-install mysqli pdo pdo_mysql && docker-php-ext-enable pdo_mysql
 
 COPY . /var/www/html/
@@ -20,6 +17,3 @@ RUN a2enmod rewrite
 EXPOSE 80
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-
-CMD ["apache2-foreground"]

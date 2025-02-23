@@ -1,10 +1,11 @@
+version: '3'
 services:
   web:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - 80:80
+      - 8000:80
     networks:
       - calerino
     depends_on:
@@ -12,17 +13,17 @@ services:
     volumes:
       - ./:/var/www/html
 
-  queue:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    command: php artisan queue:work
-    networks:
-      - calerino
-    depends_on:
-      - mariadb
-    volumes:
-      - ./:/var/www/html
+  # web-queue:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   networks:
+  #     - calerino
+  #   depends_on:
+  #     - web
+  #   volumes:
+  #     - ./:/var/www/html
+  #   command: ["php", "artisan", "queue:work", "--delay=60"]
 
   mariadb:
     image: mariadb
@@ -38,11 +39,13 @@ services:
     image: phpmyadmin/phpmyadmin
     restart: always
     ports:
-      - '8585:80'
+      - 8586:80
     environment:
       - PMA_HOST=mariadb
     networks:
       - calerino
+    depends_on:
+      - mariadb
 
 networks:
   calerino:

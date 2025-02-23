@@ -5,23 +5,27 @@ namespace App\Jobs;
 use App\Service\Ai;
 use App\Service\TelegramBot;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
-use Telegram\Bot\Laravel\Facades\Telegram;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
 class AiJobSendMessage implements ShouldQueue
 {
-    use Queueable;
-
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     private mixed $data;
     private TelegramBot $telegramBot;
+    public int $tries = 30;
 
-    /**
-     * Create a new job instance.
-     */
     public function __construct($data)
     {
         $this->data = $data;
         $this->telegramBot = app("telegramBot");
+    }
+
+    public function retryUntil()
+    {
+        return now()->addMinutes(2); // Allow retries for the next 5 minutes
     }
 
     /**
@@ -30,9 +34,8 @@ class AiJobSendMessage implements ShouldQueue
     public function handle(): void
     {
         try {
-
             $reply = Ai::sendMessage($this->data['chat'], $this->data['prompt'], $this->data['chat_id']);
-            $this->telegramBot->sendMessage($this->data['user_id'], $reply);
+            $this->telegramBot->send($this->data['user_telegram_id'], $reply);
 
         }catch (\Exception $exception){
             throw new \Exception($exception->getMessage());
