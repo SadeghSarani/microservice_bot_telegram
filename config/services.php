@@ -34,5 +34,9 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
-
+    'zarinpal' => [
+        'merchantID' => env('ZARINPAL_MERCHANT_ID'),
+        'zarinGate' => env('ZARINPAL_ZARIN_GATE'),
+        'sandbox' => env('ZARINPAL_SANDBOX'),
+    ],
 ];
