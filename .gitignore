@@ -20,3 +20,4 @@ yarn-error.log
 mysql-data
 Dockerfile
 docker-compose.yml
+mariadb_data
