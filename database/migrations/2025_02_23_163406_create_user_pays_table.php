@@ -17,6 +17,8 @@ return new class extends Migration
             $table->unsignedBigInteger('package_id');
             $table->string('authority');
             $table->string('status');
+            $table->integer('count');
+            $table->timestamp('expired_at');
             $table->timestamps();
         });
     }

@@ -7,12 +7,13 @@ use App\Exceptions\GatewayException;
 use Exception;
 use Illuminate\Support\Facades\Http;
 use Symfony\Component\HttpFoundation\Response;
+use Zarinpal\Clients\GuzzleClient;
 use Zarinpal\Zarinpal;
 
 class ZarinPalPayment
 {
 
-    private $url = 'https://sandbox.zarinpal.com/pg';
+    private $url = 'https://sandbox.zarinpal.com/pg/StartPay';
     const VERIFY_API = '/v4/payment/verify.json';
     const START_PAY = '/StartPay/';
     const PAYMENT_API = '/v4/payment/request.json';
@@ -23,21 +24,30 @@ class ZarinPalPayment
     public function payment($data)
     {
         $paymentData = [
-            'callback_url' => route('payment.callback'),
+            'callback_url' => route('pay.calback'),
             'amount' => $data['amount'],
             'description' => $data['description'],
         ];
 
+        $sandbox = true;
+        $zarinGate = false; // OR true
+        $zarinGatePSP = 'Asan'; // Leave this parameter blank if you don't need a custom PSP zaringate.
+        $client = new GuzzleClient($sandbox);
+        $lang = 'fa'; // OR en
+
+        $zarinpal = new Zarinpal(env('ZARINPAL_MERCHANTID'), $client, $lang, $sandbox, $zarinGate, $zarinGatePSP);
+
         try {
-            $response = Http::acceptJson()->post($this->url . self::PAYMENT_API, $paymentData);
+            $response = $zarinpal->request($paymentData);
+            $code = $response['data']['code'];
+            $message = $zarinpal->getCodeMessage($code);
+            if($code === 100) {
 
-            if ($response->status() != Response::HTTP_OK || $response->json()['data']['code'] != 100) {
-
-                throw new Exception('gateway_has_error', Response::HTTP_BAD_REQUEST);
+                return [
+                    'url' => $this->url.'/'.$response['data']['authority'],
+                    'authority' => $response['data']['authority'],
+                ];
             }
-
-            return $this->url . self::START_PAY . $response->json()['data']['authority'];
-
         } catch (Exception $ex) {
 
             throw new \Exception($ex->getMessage());
