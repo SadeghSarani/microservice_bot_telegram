@@ -6,5 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserPay extends Model
 {
-    //
+    protected $guarded = [];
+    
 }
