@@ -15,7 +15,8 @@
         "livewire/livewire": "^3.5",
         "livewire/volt": "^1.6",
         "moe-mizrak/laravel-openrouter": "^1.0",
-        "robsontenorio/mary": "^1.41"
+        "robsontenorio/mary": "^1.41",
+        "saeedpooyanfar/zarinpal": "^5.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

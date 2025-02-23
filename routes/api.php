@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ChatBotController;
+use App\Http\Controllers\PackageController;
 use App\Http\Controllers\PromptController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\TelegramController;
@@ -33,3 +34,7 @@ Route::prefix('v1')->group(function () {
 });
 
 Route::any('/webhook', [TelegramController::class,'webHook']);
+
+
+Route::get('/pay', [PackageController::class, 'list']);
+Route::get('/verify', [PackageController::class, 'verify']);

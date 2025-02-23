@@ -6,5 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Ai extends Model
 {
+    protected $table = 'aises';
     protected $guarded = [];
 }

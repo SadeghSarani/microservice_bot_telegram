@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Dedoc\Scramble\Scramble;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Routing\Route;
@@ -24,6 +25,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+
+        URL::forceScheme('https');
         Scramble::routes(function (Route $route) {
             return Str::startsWith($route->uri, 'api/');
         });

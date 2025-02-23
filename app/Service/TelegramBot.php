@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Http\Controllers\ChatBotController;
+use App\Http\Controllers\PackageController;
 use App\Http\Controllers\TelegramController;
 use App\Models\TelegramReplyKeyboard;
 use App\Models\TelegramUser;
@@ -33,13 +34,12 @@ class TelegramBot
                 );
             }
 
-
             switch ($message['text']) {
                 case '/start':
                     $this->start($message);
                     break;
                 default:
-                    $this->NewMessage($message, $telegram_reply_keyboards->id ?? null);
+                    $this->NewMessage($message, $telegram_reply_keyboards->id ?? null, $update);
                     break;
             }
         }
@@ -64,13 +64,22 @@ class TelegramBot
             ]);
         }
 
-        $this->send($userId, 'سلام به ربات کالرینو خوش آمدین');
+        $this->send($userId, 'به کالری‌نو خوش آمدید! 💚برای دریافت مشاوره تغذیه با هوش مصنوعی، لطفاً سرویس مورد نظرتون را انتخاب کنید.☺️');
+
     }
 
-    public function NewMessage($message, $location)
+    public function NewMessage($message, $location, $allMessage)
     {
 
         $telegram_reply_keyboards = TelegramReplyKeyboard::where('title', $message['text'])->first();
+
+        Log::error('if: ', [isset($message['callback_query']['data'])]);
+        Log::error('new Log all: ', [$allMessage]);
+        if (isset($allMessage['callback_query']['data'])) {
+            $classInstance = new PackageController();
+            $classInstance->package($message['from']['id'], $allMessage['callback_query']['data']);
+        }
+
 
         if (isset($telegram_reply_keyboards->id)) {
 
@@ -81,7 +90,6 @@ class TelegramBot
         } else {
             $locationData = TelegramUserLocation::where('telegram_user_id', $message['from']['id'])->first();
             if (!empty($locationData)) {
-                Log::error('here', [$locationData]);
                 $classInstance = new ChatBotController();
                 $classInstance->chatCreate($message['from']['id'], $message['text'], $locationData->location);
 
@@ -126,6 +134,23 @@ class TelegramBot
             'chat_id' => $user_id,
             'text' => $text,
             'reply_markup' => $keyboard
+        ]);
+    }
+
+    public function createButtonInline($user_id, $data)
+    {
+        $telegram = new Api(env('TELEGRAM_BOT_TOKEN'));
+
+        $keyboard = [
+            'inline_keyboard' => [
+                $data
+            ]
+        ];
+
+        $telegram->sendMessage([
+            'chat_id' => 854529351,
+            'text' => 'یکی از پیکج ها رو انتخاب کن',
+            'reply_markup' => json_encode($keyboard)
         ]);
     }
 }

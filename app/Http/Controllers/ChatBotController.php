@@ -10,6 +10,7 @@ use App\Repositories\ChatBotRepository;
 use App\Service\Ai;
 use App\Service\TelegramBot;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Log;
 
 class ChatBotController extends Controller
@@ -23,9 +24,33 @@ class ChatBotController extends Controller
         $this->telegramBot = app("telegramBot");
     }
 
-    public function returnMessage($user_id)
+    public function returnMessage($user_id, $text, $loc)
     {
-        $this->telegramBot->send($user_id, 'متن مورد نظر را تایپ کنید');
+
+        $message = '';
+        switch ($loc) {
+            case 9 :
+                $message = 'اسم خوراکی یا غذایی که میخوای کالری اش روبدونی بهم بگو! 😊';
+            break;
+            case 4 :
+                $message = 'سوالی درباره رژیم یا تغذیه‌ات داری؟ 🥗 بپرس، من اینجام!😊';
+            break;
+            case 5 :
+                $message = 'یه غذای خوشمزه متناسب با رژیمت می‌خوای؟😊 
+
+باید محدودیت‌های غذایی و علایقت رو بهم بگو تا بتونم پیشنهاد بدم!🥦
+
+👈لطفا به این شکل بهم بگو:
+
+👈مثلا، "رژیم کتو دارم و به ماهی و سبزیجات علاقه دارم."';
+            break;
+            case 6 :
+                $message = 'می‌خوای بدونی غذای امروزت چقدر سالم بوده؟ 📊 اسمشون رو برام بفرست!🥑';
+            break;
+        }
+
+        
+        $this->telegramBot->send($user_id, $message == '' ? 'سوال خود را بپرسید' : $message);
     }
 
 
@@ -47,10 +72,14 @@ class ChatBotController extends Controller
         $reply = Ai::sendMessage($createChat->context, $textPrompt, $createChat->id);
     }
 
-    public function chatCreate($telegram_user_id, $text, $location)
+public function chatCreate($telegram_user_id, $text, $location)
     {
         $loc = TelegramReplyKeyboard::where('id', $location)->first();
 
+	if($loc->service_id == null) {
+	   $this->telegramBot->send($telegram_user_id, 'لطفا یکی از سرویس های را انتخاب کنید تا بهتر بتونم کمکتون کنم');
+	   return true;
+	}
         $this->creditActions($telegram_user_id);
 
         $createChat = $this->chatRepo->create([
@@ -65,15 +94,18 @@ class ChatBotController extends Controller
             $textPrompt .= $prompt->prompt;
         });
 
+
         AiJobSendMessage::dispatch([
             'chat' => $createChat->context,
             'prompt' => $textPrompt,
             'chat_id' => $createChat->id,
             'user_telegram_id' => $telegram_user_id,
-        ]);
+        ])->delay(now()->seconds(20));
 
-        $this->telegramBot->send($createChat->user_id, 'کاربر گرامی سوال شما دریافت و بعد از پردازش نتیجه برای شما ارسال میشود');
+        $this->telegramBot->send($telegram_user_id, 'متوجه شدم، 🙂 در حال آماده کردن پاسخ  هستم... ⏳');
+        return true;
     }
+
 
     private function creditActions($telegram_user_id)
     {
@@ -89,7 +121,7 @@ class ChatBotController extends Controller
         }
 
         $credit->update([
-            'credit' => $credit->credit - 1000,
+            'credit' => $credit->credit - 100,
         ]);
     }
 }

@@ -137,6 +137,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/livewire/livewire" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/livewire/volt" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/robsontenorio/mary" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/saeedpooyanfar/zarinpal" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

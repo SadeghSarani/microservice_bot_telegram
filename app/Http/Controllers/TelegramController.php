@@ -45,6 +45,5 @@ class TelegramController extends Controller
     public function newMz($telegram_user_id,$text){
 
         $this->telegramBot->send($telegram_user_id,"زیر یکم".$text);
-
     }
 }

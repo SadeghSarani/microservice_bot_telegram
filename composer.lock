@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2af020915ebc2e8e15fc12c5db0dbd7e",
+    "content-hash": "12d11ebff48363622b4876fd4518227a",
     "packages": [
         {
             "name": "blade-ui-kit/blade-heroicons",
@@ -4448,6 +4448,62 @@
                 }
             ],
             "time": "2025-01-01T14:48:44+00:00"
+        },
+        {
+            "name": "saeedpooyanfar/zarinpal",
+            "version": "v5.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Saeed-Pooyanfar/zarinpal-laravel.git",
+                "reference": "b2a491892b46e2f22a49293dcf3fa273fbb370ab"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Saeed-Pooyanfar/zarinpal-laravel/zipball/b2a491892b46e2f22a49293dcf3fa273fbb370ab",
+                "reference": "b2a491892b46e2f22a49293dcf3fa273fbb370ab",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "guzzlehttp/guzzle": "^7.2.0",
+                "php": "^7.4|^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Zarinpal\\ZarinpalServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Zarinpal\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Saeed Pooyanfar",
+                    "email": "saeedp47@gmail.com",
+                    "homepage": "https://github.com/Saeed-Pooyanfar"
+                }
+            ],
+            "description": "Zarinpal payment for Laravel Framework (with sandbox support)",
+            "keywords": [
+                "framework",
+                "laravel",
+                "payment",
+                "zarinpal"
+            ],
+            "support": {
+                "issues": "https://github.com/Saeed-Pooyanfar/zarinpal-laravel/issues",
+                "source": "https://github.com/Saeed-Pooyanfar/zarinpal-laravel/tree/v5.0.1"
+            },
+            "time": "2021-05-20T20:08:10+00:00"
         },
         {
             "name": "spatie/data-transfer-object",
@@ -9367,5 +9423,5 @@
         "php": "^8.2"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.2.0"
 }
