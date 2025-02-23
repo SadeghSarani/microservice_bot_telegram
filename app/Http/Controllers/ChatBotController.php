@@ -49,7 +49,7 @@ class ChatBotController extends Controller
             break;
         }
 
-        
+
         $this->telegramBot->send($user_id, $message == '' ? 'سوال خود را بپرسید' : $message);
     }
 
