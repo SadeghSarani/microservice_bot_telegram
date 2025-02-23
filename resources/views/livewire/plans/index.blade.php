@@ -117,8 +117,8 @@ new class extends Component {
             <x-button icon="o-trash" wire:click="delete({{ $button['id'] }})" wire:confirm="Are you sure?" spinner
                       class="btn-ghost btn-sm text-red-500"/>
             
-            <x-button icon="o-wrench" wire:click="edit({{ $button['id'] }})"
-                      class="btn-ghost btn-sm text-yellow-500"/>
+            {{-- <x-button icon="o-wrench" wire:click="edit({{ $button['id'] }})"
+                      class="btn-ghost btn-sm text-yellow-500"/> --}}
             
             @endscope
         </x-table>
