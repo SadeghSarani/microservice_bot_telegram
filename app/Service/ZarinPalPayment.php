@@ -27,9 +27,6 @@ class ZarinPalPayment
             'callback_url' => route('pay.calback'),
             'amount' => $data['amount'],
             'description' => $data['description'],
-            'metadata' => [
-                'order_id' => $data['id'],
-            ],
         ];
 
         $sandbox = true;
@@ -46,7 +43,10 @@ class ZarinPalPayment
             $message = $zarinpal->getCodeMessage($code);
             if($code === 100) {
 
-                return $this->url.'/'.$response['data']['authority'];
+                return [
+                    'url' => $this->url.'/'.$response['data']['authority'],
+                    'authority' => $response['data']['authority'],
+                ];
             }
         } catch (Exception $ex) {
 

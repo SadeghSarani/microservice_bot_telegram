@@ -47,7 +47,7 @@ class PackageController extends Controller
             'description' => $package['name'],
         ]);
 
-        $userPay = UserPay::where('user_id', $user_id)->first();
+        $userPay = UserPay::where('user_id', $user_id)->where('status', 'active')->first();
 
         if ($userPay != null) {
             $this->bot->send($user_id, 'کاربر گرامی شما یک پکیج فعال دارید');
@@ -60,10 +60,10 @@ class PackageController extends Controller
         ],[
             'user_id' => $user_id,
             'package_id' => $message,
-            'authority' => $urlPayment,
+            'authority' => $urlPayment['authority'],
             'status' => 'pending',
-            'count' => $package['count'],
-            'expired_at' => Carbon::now()->addMonths($package['month']),
+            'count' => $package['count_request'],
+            'expired_at' => Carbon::now()->addMonths((int)$package['month'])->format('Y-m-d H:i:s'),
         ]);
 
         $message = $package['description'];
@@ -73,7 +73,7 @@ class PackageController extends Controller
         $this->bot->createButtonInline($user_id, [
             [
                 'text' => 'لینک پرداخت',
-                'url' => $urlPayment,
+                'url' => $urlPayment['url'],
             ]
         ], 'روی لینک پرداخت کلیک نمایید (vpn) خود را خاموش نمایید');
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Package;
 use App\Models\UserPay;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -18,15 +19,15 @@ class PayController extends Controller
         ->first();
 
         if (!$userPay) {
-            return 'پرداخت نا موفق';
+            return view('callback-error');
         }
-        
 
+        $amount = Package::where('id', $userPay['package_id'])->first();
 
         $data = [
             "merchant_id" => env('ZARINPAL_MERCHANTID'),
             "authority" => $_GET['Authority'],
-            "amount" => $userPay['price']
+            "amount" => $amount['price']
         ];
         $response = Http::withHeaders([
             'User-Agent' => 'ZarinPal Rest Api v4',
@@ -34,22 +35,17 @@ class PayController extends Controller
         ])->post('https://sandbox.zarinpal.com/pg/v4/payment/verify.json', $data);
     
         $result = $response->json();
-    
-        
-    
-        if (isset($result['data']['code']) && $result['data']['code'] == 100) {
 
-            
+        if (isset($result['data']['code']) && $result['data']['code'] == 100) {
             $userPay->update([
                 'status' => 'active',
             ]);
             return view('calback');
 
+
         } else {
-            return 'نا موفق';
+            return view('callback-failed');
         }
-
-
 
     }
 }
