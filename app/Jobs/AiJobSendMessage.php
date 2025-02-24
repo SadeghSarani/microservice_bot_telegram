@@ -17,6 +17,7 @@ class AiJobSendMessage implements ShouldQueue
     private TelegramBot $telegramBot;
     public int $tries = 30;
 
+    public int $timeout = 1200;
     /**
      * Create a new job instance.
      */
