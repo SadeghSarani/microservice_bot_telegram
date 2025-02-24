@@ -33,7 +33,7 @@ class PackageController extends Controller
             ];
         }
 
-        $this->bot->createButtonInline($user_id, $data, 'یکی از پکیج ها را انتخاب نمایید');
+        $this->bot->createButtonInline($user_id, $data, 'لطفا یک گزینه را انتخاب کنید👇');
     }
 
     public function getPackage($user_id, $message)
@@ -50,7 +50,8 @@ class PackageController extends Controller
         $userPay = UserPay::where('user_id', $user_id)->where('status', 'active')->first();
 
         if ($userPay != null) {
-            $this->bot->send($user_id, 'کاربر گرامی شما یک پکیج فعال دارید');
+            $this->bot->send($user_id, 'اشتراک شما هنوز اعتبار دارد!
+برای دیدن اعتبار خود گزینه  "اعتبار من 🥇" را بررسی کنید');
 
             return true;
         }
