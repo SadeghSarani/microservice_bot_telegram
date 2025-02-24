@@ -26,9 +26,12 @@ class CreditController extends Controller
             return;
         }
 
+        $expiredAt = Carbon::parse($credit->expired_at);
+        $daysRemaining = Carbon::now()->diffInDays($expiredAt);
+
         $message = '
 📚 تعداد درخواست باقی مانده:      ' .  $credit->count .'
-⏱ زمان باقی مانده تا پایان اشتراک:      '.   Carbon::now()->diffInDays($credit->expired_at) .' روز';
+⏱ زمان باقی مانده تا پایان اشتراک:'.   $daysRemaining .' روز';
 
 
 
