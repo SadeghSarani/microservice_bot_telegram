@@ -29,8 +29,8 @@ class ZarinPalPayment
             'description' => $data['description'],
         ];
 
-        $sandbox = true;
-        $zarinGate = false; // OR true
+        $sandbox = false;
+        $zarinGate = true; // OR true
         $zarinGatePSP = 'Asan'; // Leave this parameter blank if you don't need a custom PSP zaringate.
         $client = new GuzzleClient($sandbox);
         $lang = 'fa'; // OR en
