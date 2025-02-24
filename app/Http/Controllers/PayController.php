@@ -32,7 +32,7 @@ class PayController extends Controller
         $response = Http::withHeaders([
             'User-Agent' => 'ZarinPal Rest Api v4',
             'Content-Type' => 'application/json'
-        ])->post('https://sandbox.zarinpal.com/pg/v4/payment/verify.json', $data);
+        ])->post('https://payment.zarinpal.com/pg/v4/payment/verify.json', $data);
     
         $result = $response->json();
 

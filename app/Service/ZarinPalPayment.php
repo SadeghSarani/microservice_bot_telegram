@@ -13,7 +13,7 @@ use Zarinpal\Zarinpal;
 class ZarinPalPayment
 {
 
-    private $url = 'https://sandbox.zarinpal.com/pg/StartPay';
+    private $url = 'https://payment.zarinpal.com/pg/StartPay';
     const VERIFY_API = '/v4/payment/verify.json';
     const START_PAY = '/StartPay/';
     const PAYMENT_API = '/v4/payment/request.json';
