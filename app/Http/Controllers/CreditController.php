@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Credit;
 use App\Models\UserPay;
 use App\Service\TelegramBot;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class CreditController extends Controller
@@ -26,7 +26,11 @@ class CreditController extends Controller
             return;
         }
 
-        $message = 'تعداد درخواست های شما : ' . $credit->count . 'تا تاریخ ' . $credit->expired_at;
+        $message = '
+📚 تعداد درخواست باقی مانده:      ' .  $credit->count .'
+⏱ زمان باقی مانده تا پایان اشتراک:      '.   Carbon::now()->diffInDays($credit->expired_at) .' روز';
+
+
 
         $this->telegram->send($user_id, $message);
 
