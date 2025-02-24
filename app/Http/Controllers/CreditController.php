@@ -30,7 +30,7 @@ class CreditController extends Controller
         $daysRemaining = round(Carbon::now()->diffInDays($expiredAt));
 
         $message = '
-📚 تعداد درخواست باقی مانده:      ' .  $credit->count .'
+📚 تعداد درخواست باقی مانده:' .  $credit->count .'
 ⏱ زمان باقی مانده تا پایان اشتراک:'.   $daysRemaining .' روز';
 
 
