@@ -3,6 +3,7 @@
 use App\Http\Controllers\PayController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
+use Laravel\Telescope\Http\Controllers\HomeController;
 use Livewire\Volt\Volt;
 
 Volt::route('/', 'users.index');
@@ -32,6 +33,15 @@ Route::any('/logout', function () {
     return redirect('admin/login');
 })->withoutMiddleware(AdminMiddleware::class);
 
+
+Route::get('/home', function () {
+    return view('home');
+})->name('home');
+
+
+Route::get('/terms', function () {
+    return view('terms-and-conditions');
+})->name('terms');
 
 
 Route::any('pay/calback',[PayController::class,'calback'])->name('pay.calback');
