@@ -34,7 +34,7 @@ Route::any('/logout', function () {
 })->withoutMiddleware(AdminMiddleware::class);
 
 
-Route::get('/home', function () {
+Route::get('/', function () {
     return view('home');
 })->name('home');
 
