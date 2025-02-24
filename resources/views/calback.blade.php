@@ -30,7 +30,7 @@
             <div class="success-icon">✓</div>
             <h1 class="mt-3">پرداخت با موفقیت انجام شد</h1>
             <p>با تشکر از خرید شما. رسید پرداخت به تلگرام شما ارسال شد.</p>
-            <a href="/" class="btn btn-success mt-4">بازگشت به صفحه اصلی</a>
+            <a href="https://t.me/Calorieno_bot" class="btn btn-success mt-4">بازگشت به کالرینو در تلگرام</a>
         </div>
     </div>
 </body>

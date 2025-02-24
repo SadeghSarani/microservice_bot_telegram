@@ -30,7 +30,7 @@
         <div class="error-icon">x</div>
         <h1 class="mt-3">مشکلی در پرداخت بوجود آمد</h1>
         <p>کاربر گرامی اگر پولی از حساب شما کسر گردید بعد از 72 ساعت به حساب شما برمیگردد</p>
-        <a href="/" class="btn btn-success mt-4">بازگشت به صفحه اصلی</a>
+        <a href="https://t.me/Calorieno_bot" class="btn btn-success mt-4">بازگشت به کالرینو در تلگرام</a>
     </div>
 </div>
 </body>

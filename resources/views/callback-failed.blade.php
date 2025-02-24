@@ -30,7 +30,7 @@
         <div class="error-icon">x</div>
         <h1 class="mt-3">پرداخت ناموفق</h1>
         <p>کاربر گرامی پرداخت شما کنسل گردید</p>
-        <a href="/" class="btn btn-success mt-4">بازگشت به صفحه اصلی</a>
+        <a href="https://t.me/Calorieno_bot" class="btn btn-success mt-4">بازگشت به کالرینو در تلگرام</a>
     </div>
 </div>
 </body>
