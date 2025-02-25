@@ -17,7 +17,7 @@ class TelegramUserObserver
             'package_id' => 0,
             'authority' => '',
             'status' => 'active',
-            'count' => 50,
+            'count' => 100,
             'expired_at' => now()->addDays(7)
         ]);
     }
