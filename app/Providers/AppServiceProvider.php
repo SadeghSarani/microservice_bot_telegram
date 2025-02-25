@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\TelegramUser;
+use App\Observers\TelegramUserObserver;
 use Dedoc\Scramble\Scramble;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
@@ -29,5 +31,7 @@ class AppServiceProvider extends ServiceProvider
         Scramble::routes(function (Route $route) {
             return Str::startsWith($route->uri, 'api/');
         });
+
+        TelegramUser::observe(TelegramUserObserver::class);
     }
 }
