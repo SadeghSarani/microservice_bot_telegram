@@ -18,7 +18,7 @@ class CreditController extends Controller
 
     public function showCredit($user_id)
     {
-        $credit = UserPay::where('user_id', $user_id)->first();
+        $credit = UserPay::where('user_id', $user_id)->where('status', 'active')->first();
 
         if (empty($credit)) {
             $this->telegram->send($user_id, 'متاسفانه در حال حاضر شما پکیج فعالی ندارید');

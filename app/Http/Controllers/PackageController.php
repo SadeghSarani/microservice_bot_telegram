@@ -54,8 +54,8 @@ class PackageController extends Controller
             $userPay->delete();
         }
 
-        if ($userPay != null && $userPay->expired_at < now() || $userPay->count <= 0) {
-            $this->bot->send($user_id, 'اشتراک شما هنوز اعتبار دارد!
+        if ($userPay != null) {
+            $this->bot->send($user_id, 'اشتراک شما هنوز اعتبار دارد! 😊
 برای دیدن اعتبار خود گزینه  "اعتبار من 🥇" را بررسی کنید');
 
             return true;

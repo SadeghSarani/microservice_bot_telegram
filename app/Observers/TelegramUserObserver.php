@@ -13,11 +13,11 @@ class TelegramUserObserver
     public function created(TelegramUser $telegramUser): void
     {
         UserPay::create([
-            'user_id' => $telegramUser->id,
+            'user_id' => $telegramUser->user_id,
             'package_id' => 0,
             'authority' => '',
             'status' => 'active',
-            'count' => 50,
+            'count' => 100,
             'expired_at' => now()->addDays(7)
         ]);
     }
