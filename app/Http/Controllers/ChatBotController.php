@@ -153,6 +153,9 @@ class ChatBotController extends Controller
         if ($userPackageData->expired_at < now()) {
             $this->telegramBot->send($telegram_user_id,
                 'کاربرگرامی پکیج شما به اتمام رسیده لطفا پکیج جدید خریداری نمایید');
+
+            $userPackageData->delete();
+
             return false;
         }
 
