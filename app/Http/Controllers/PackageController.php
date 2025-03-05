@@ -49,17 +49,16 @@ class PackageController extends Controller
 
         $userPay = UserPay::where('user_id', $user_id)->where('status', 'active')->first();
 
-        if ($userPay->expired_at < now() || $userPay->count <= 0) {
+        if ($userPay != null && $userPay->expired_at < now() || $userPay->count <= 0) {
 
             $userPay->delete();
-        }
-
-        if ($userPay != null) {
+        } else {
             $this->bot->send($user_id, 'اشتراک شما هنوز اعتبار دارد! 😊
 برای دیدن اعتبار خود گزینه  "اعتبار من 🥇" را بررسی کنید');
 
             return true;
         }
+
 
         UserPay::updateOrCreate([
             'user_id' => $user_id,
