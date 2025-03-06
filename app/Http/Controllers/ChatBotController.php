@@ -133,7 +133,9 @@ class ChatBotController extends Controller
 
     private function checkUserRequest($telegram_user_id)
     {
-        $userPackageData = UserPay::query()->where('user_id', $telegram_user_id)->first();
+        $userPackageData = UserPay::query()
+            ->where('status', 'active')
+            ->where('user_id', $telegram_user_id)->first();
 
         if ($userPackageData == null) {
             $this->telegramBot->send($telegram_user_id, 'کاربر گرامی ☺️ اشتراک شما اعتبار ندارد!
