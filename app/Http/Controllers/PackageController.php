@@ -49,13 +49,15 @@ class PackageController extends Controller
 
         $userPay = UserPay::where('user_id', $user_id)->where('status', 'active')->first();
 
-        if ($userPay != null) {
 
+        if ($userPay != null) {
             if ($userPay->expired_at < now() || $userPay->count <= 0) {
 
                 $userPay->delete();
             }
+        }
 
+        if ($userPay == null) {
 
             UserPay::updateOrCreate([
                 'user_id' => $user_id,
