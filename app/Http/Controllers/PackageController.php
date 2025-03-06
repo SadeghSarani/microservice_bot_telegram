@@ -56,6 +56,31 @@ class PackageController extends Controller
                 $userPay->delete();
             }
 
+
+            UserPay::updateOrCreate([
+                'user_id' => $user_id,
+            ],[
+                'user_id' => $user_id,
+                'package_id' => $message,
+                'authority' => $urlPayment['authority'],
+                'status' => 'pending',
+                'count' => $package['count_request'],
+                'expired_at' => Carbon::now()->addMonths((int)$package['month'])->format('Y-m-d H:i:s'),
+            ]);
+
+            $message = $package['description'];
+
+            $this->bot->send($user_id, $message);
+
+            $this->bot->createButtonInline($user_id, [
+                [
+                    'text' => 'لینک پرداخت',
+                    'url' => $urlPayment['url'],
+                ]
+            ], 'روی لینک پرداخت کلیک نمایید (vpn) خود را خاموش نمایید');
+
+            return true;
+
         } else {
             $this->bot->send($user_id, 'اشتراک شما هنوز اعتبار دارد! 😊
 برای دیدن اعتبار خود گزینه  "اعتبار من 🥇" را بررسی کنید');
@@ -63,29 +88,5 @@ class PackageController extends Controller
             return true;
         }
 
-
-        UserPay::updateOrCreate([
-            'user_id' => $user_id,
-        ],[
-            'user_id' => $user_id,
-            'package_id' => $message,
-            'authority' => $urlPayment['authority'],
-            'status' => 'pending',
-            'count' => $package['count_request'],
-            'expired_at' => Carbon::now()->addMonths((int)$package['month'])->format('Y-m-d H:i:s'),
-        ]);
-
-        $message = $package['description'];
-
-        $this->bot->send($user_id, $message);
-
-        $this->bot->createButtonInline($user_id, [
-            [
-                'text' => 'لینک پرداخت',
-                'url' => $urlPayment['url'],
-            ]
-        ], 'روی لینک پرداخت کلیک نمایید (vpn) خود را خاموش نمایید');
-
-        return true;
     }
 }
