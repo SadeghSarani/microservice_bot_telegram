@@ -100,6 +100,7 @@ class ChatBotController extends Controller
             $textPrompt .= $prompt->prompt;
         });
 
+        
 
         AiJobSendMessage::dispatch([
             'chat' => $createChat->context,

@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Http\Controllers\ChatBotController;
 use App\Http\Controllers\PackageController;
+use App\Http\Controllers\DietController;
 use App\Http\Controllers\TelegramController;
 use App\Models\TelegramReplyKeyboard;
 use App\Models\TelegramUser;
@@ -87,19 +88,32 @@ class TelegramBot
 
 
         if (isset($telegram_reply_keyboards->id)) {
-
             $classInstance = app($telegram_reply_keyboards->class);
             $action = $telegram_reply_keyboards->action;
 
             $classInstance->$action($message['from']['id'], $message['text'], $location);
         } else {
             $locationData = TelegramUserLocation::where('telegram_user_id', $message['from']['id'])->first();
-            if (!empty($locationData)) {
+            $localData = TelegramReplyKeyboard::query()->where('id', $locationData->location)->first();
+
+            if ($localData->class == ChatBotController::class) {
                 $classInstance = new ChatBotController();
                 $classInstance->chatCreate($message['from']['id'], $message['text'], $locationData->location);
 
+            } elseif ($localData->class == null || !empty($localData->class)) {
+
+                $classInstance = app($localData->class);
+                $func = $localData->action;
+
+                Log::error('data : ', [
+                    'func' => $func,
+                    'class' => $classInstance,
+                ]);
+
+                $classInstance->$func($message['from']['id'], $message['text'], $locationData->location);
+
             } else {
-                $this->error($message['from']['id'], 'لطفا یکی از دکمه ها را انتهاب کنید');
+                $this->error($message['from']['id'], 'لطفا یکی از دکمه ها را انتخاب کنید');
             }
         }
     }
@@ -167,7 +181,7 @@ class TelegramBot
             case 'package' :
                 $class = new PackageController();
                 $class->$function($user_id, $data);
-            break;
+                break;
             default :
                 $telegram->sendMessage([
                     'chat_id' => $user_id,
