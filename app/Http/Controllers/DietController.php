@@ -29,13 +29,13 @@ class DietController extends Controller
             ->where('package_id', 3)
             ->first();
 
-        if ($userPay == null) {
-            
+        if ($userPay == null || $user_id != 7176443314) {
+
             TelegramUserLocation::query()->where('telegram_user_id', $user_id)->update([
                 'location' => TelegramReplyKeyboard::query()->where('title', '/start')->first()->id,
             ]);
 
-            $this->telegramBot->send($user_id, 'شما بسته ای برای دریافت رژیم غذایی خریداری نکردید');
+            $this->telegramBot->send($user_id, 'این سرویس به زودی قابل استفاده میشود لطفا از سرویس  های دیگه استفاده نمایید');
             return true;
         }
 
