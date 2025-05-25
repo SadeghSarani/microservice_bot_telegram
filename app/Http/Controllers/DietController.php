@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\AiJobDietMessage;
 use App\Jobs\AiJobSendMessage;
 use App\Models\Diet;
 use App\Models\DietUser;
@@ -29,17 +30,12 @@ class DietController extends Controller
             ->where('package_id', 3)
             ->first();
 
-        if ($userPay == null || $user_id != 7176443314) {
 
-            TelegramUserLocation::query()->where('telegram_user_id', $user_id)->update([
-                'location' => TelegramReplyKeyboard::query()->where('title', '/start')->first()->id,
-            ]);
 
-            $this->telegramBot->send($user_id, 'این سرویس به زودی قابل استفاده میشود لطفا از سرویس  های دیگه استفاده نمایید');
-            return true;
-        }
-
-        $this->telegramBot->send($user_id, 'ٰرژیم را شروع کنید');
+        $this->telegramBot->send($user_id, 'فقط چند قدم تا دریافت رژیم و شروع مسیر سلامتی باقی مونده! 😊
+💚 در ادامه چند سوال ازت پرسیده میشه و براساس اونا رژیم در اختیارت قرار میگیره. 
+⭕️ در صورتی که پاسخ سوالی رو نداری،کلمه "ندارم" رو وارد کن و به سوال بعدی برو.
+👈 برای دریافت رژیم، گزینه دریافت رژیم رو در منو انتخاب کن.');
 
         return true;
     }
@@ -119,7 +115,7 @@ class DietController extends Controller
             ]);
 
 
-            AiJobSendMessage::dispatch([
+            AiJobDietMessage::dispatch([
                 'chat' => $promptEntended,
                 'prompt' => $promptEntended,
                 'chat_id' => $createChat->id,

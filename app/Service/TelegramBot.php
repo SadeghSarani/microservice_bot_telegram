@@ -10,6 +10,7 @@ use App\Models\TelegramReplyKeyboard;
 use App\Models\TelegramUser;
 use App\Models\TelegramUserLocation;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Telegram\Bot\Api;
 use Telegram\Bot\Keyboard\Keyboard;
 use Telegram\Bot\Laravel\Facades\Telegram;
@@ -188,5 +189,16 @@ class TelegramBot
                     'text' => 'انتخاب نادرست '
                 ]);
         }
+    }
+
+    public function sendDocument($chatId, $documentPath, $caption = '')
+    {
+        $file = Storage::path($documentPath);
+
+        return Telegram::sendDocument([
+            'chat_id' => $chatId,
+            'document' => fopen($file, 'r'),
+            'caption' => $caption
+        ]);
     }
 }
