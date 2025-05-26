@@ -11,6 +11,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class AiJobDietMessage implements ShouldQueue
@@ -52,24 +53,52 @@ class AiJobDietMessage implements ShouldQueue
             throw new \Exception($exception->getMessage());
         }
     }
-
     private function generatePdf(string $html): string
     {
-        // Configure DOMPDF options
+        // Configure DOMPDF options for Persian support
         $options = new Options();
         $options->set('isRemoteEnabled', true);
-        $options->set('defaultFont', 'DejaVu Sans');
+        $options->set('isHtml5ParserEnabled', true); // Important for RTL support
+        $options->set('isPhpEnabled', true);
+        $options->set('defaultFont', 'dejavu-sans'); // Supports Persian characters
+
+        // If you want to use a custom Persian font:
+        // $options->set('fontDir', storage_path('fonts'));
+        // $options->set('fontCache', storage_path('fonts'));
+        // $options->set('defaultFont', 'your-persian-font'); // e.g., 'xb-zar', 'b-nazanin'
 
         $dompdf = new Dompdf($options);
-        $dompdf->loadHtml($html);
+
+        $persianHtml = '<html dir="rtl">
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+                <style>
+                    body {
+                        font-family: dejavu-sans;
+                        text-align: right;
+                        direction: rtl;
+                    }
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        direction: rtl;
+                    }
+                    th, td {
+                        padding: 8px;
+                        text-align: right;
+                    }
+                </style>
+            </head>
+            <body>' . $html . '</body>
+        </html>';
+
+        $dompdf->loadHtml($persianHtml, 'UTF-8');
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
 
-        // Generate a unique filename
         $filename = 'diet_plan_' . time() . '.pdf';
         $path = $filename;
 
-        // Save the PDF to storage
         Storage::put($path, $dompdf->output());
 
         return $path;
