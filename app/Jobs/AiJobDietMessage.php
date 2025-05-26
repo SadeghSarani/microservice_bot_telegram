@@ -58,49 +58,57 @@ class AiJobDietMessage implements ShouldQueue
         // Configure DOMPDF options for Persian support
         $options = new Options();
         $options->set('isRemoteEnabled', true);
-        $options->set('isHtml5ParserEnabled', true); // Important for RTL support
+        $options->set('isHtml5ParserEnabled', true);
         $options->set('isPhpEnabled', true);
-        $options->set('defaultFont', 'dejavu-sans'); // Supports Persian characters
+        $options->set('defaultFont', 'dejavu-sans'); // Font that supports Persian
 
-        // If you want to use a custom Persian font:
+        // If you have custom Persian fonts:
         // $options->set('fontDir', storage_path('fonts'));
         // $options->set('fontCache', storage_path('fonts'));
-        // $options->set('defaultFont', 'your-persian-font'); // e.g., 'xb-zar', 'b-nazanin'
+        // $options->set('defaultFont', 'xb-zar'); // Example Persian font
 
         $dompdf = new Dompdf($options);
 
-        $persianHtml = '<html dir="rtl">
-            <head>
-                <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-                <style>
-                    body {
-                        font-family: dejavu-sans;
-                        text-align: right;
-                        direction: rtl;
-                    }
-                    table {
-                        width: 100%;
-                        border-collapse: collapse;
-                        direction: rtl;
-                    }
-                    th, td {
-                        padding: 8px;
-                        text-align: right;
-                    }
-                </style>
-            </head>
-            <body>' . $html . '</body>
-        </html>';
+        $persianHtml = '<!DOCTYPE html>
+    <html dir="rtl">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <style>
+            * {
+                font-family: dejavu-sans, XB Zar, Tahoma;
+                text-align: right;
+                direction: rtl;
+            }
+            body {
+                padding: 20px;
+                line-height: 1.6;
+            }
+            h3, h4 {
+                color: #2c3e50;
+            }
+            ul {
+                padding-right: 20px;
+            }
+            strong {
+                color: #e74c3c;
+            }
+        </style>
+    </head>
+    <body>'
+            . $html .
+            '</body>
+    </html>';
 
-        $dompdf->loadHtml($persianHtml, 'UTF-8');
+        // Load HTML with UTF-8 encoding
+        $dompdf->loadHtml(mb_convert_encoding($persianHtml, 'HTML-ENTITIES', 'UTF-8'));
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
 
+        // Generate filename
         $filename = 'diet_plan_' . time() . '.pdf';
         $path = $filename;
 
         Storage::put($path, $dompdf->output());
-
         return $path;
     }
 }
