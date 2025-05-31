@@ -42,8 +42,7 @@ class AiJobDietMessage implements ShouldQueue
                 $this->telegramBot->send(
                     $this->data['user_telegram_id'],
                     "https://calorieno.com/diet/user/".$this->data['chat_id'].  "
-                    
-                    کاربر گرامی رژیم شما آماده شده است و از طریق لینک زیر اقدام نمایید نسبت به دیدن و ذخیره آن با تشکر",
+                    کاربر گرامی رژیم شما آماده شده است و از طریق لینک زیر اقدام نمایید نسبت به دیدن و ذخیره لطفا لینک را کپی کرده و در مرورگر خود بازنمایید تا بتوانید آن را دانلود نمایید",
                 );
             }
         } catch (\Exception $exception) {
