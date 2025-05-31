@@ -1,8 +1,13 @@
 <?php
 
+use App\Http\Controllers\DietController;
 use App\Http\Controllers\PayController;
 use App\Http\Middleware\AdminMiddleware;
+use Dompdf\Dompdf;
+use Dompdf\Options;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Telescope\Http\Controllers\HomeController;
 use Livewire\Volt\Volt;
 
@@ -33,6 +38,7 @@ Route::any('/logout', function () {
     return redirect('admin/login');
 })->withoutMiddleware(AdminMiddleware::class);
 
+Route::get('/diet/user/{id}', [DietController::class, 'loadPage']);
 
 Route::get('/', function () {
     return view('home');
