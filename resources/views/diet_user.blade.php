@@ -17,6 +17,26 @@
             font-style: normal;
         }
 
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            #dietPage {
+                width: 794px; /* A4 width in pixels at 96dpi */
+                max-width: 100%;
+                margin: 0 auto;
+                font-size: 14px;
+                transform: scale(1);
+                transform-origin: top left;
+            }
+
+            .photo-grid {
+                grid-template-columns: repeat(4, 1fr); /* force 4 columns for photo log */
+            }
+        }
+
         body {
             font-family: 'Azarmehr', sans-serif;
             margin: 0;
@@ -116,6 +136,8 @@
 <script>
     function downloadPDF() {
         const element = document.getElementById('dietPage');
+        element.classList.add('pdf-export'); // if needed to apply special styles
+
         const opt = {
             margin:       0,
             filename:     'user-diet.pdf',
@@ -124,7 +146,10 @@
             jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
             pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
         };
-        html2pdf().set(opt).from(element).save();
+
+        html2pdf().set(opt).from(element).save().then(() => {
+            element.classList.remove('pdf-export');
+        });
     }
 </script>
 
