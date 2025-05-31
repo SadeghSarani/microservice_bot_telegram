@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Jobs\AiJobDietMessage;
 use App\Jobs\AiJobSendMessage;
+use App\Models\ChatBot;
 use App\Models\Diet;
 use App\Models\DietUser;
 use App\Models\Prompt;
@@ -13,6 +14,7 @@ use App\Models\UserPay;
 use App\Repositories\ChatBotRepository;
 use App\Service\TelegramBot;
 use Illuminate\Support\Facades\Log;
+use Request;
 
 class DietController extends Controller
 {
@@ -45,6 +47,13 @@ class DietController extends Controller
 ⭕️ در صورتی که پاسخ سوالی رو نداری،کلمه "ندارم" رو وارد کن و به سوال بعدی برو.
 👈 برای دریافت رژیم، گزینه دریافت رژیم رو در منو انتخاب کن.');
         return true;
+    }
+
+    public function loadPage(Request $request, $chat)
+    {
+        $chat = ChatBot::query()->find($chat);
+
+        return view('diet_user', ['content' => $chat['answer']]);
     }
 
     public function dietEnd($user_id, $text, $loc)
