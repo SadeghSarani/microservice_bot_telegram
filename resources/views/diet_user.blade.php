@@ -5,11 +5,7 @@
     <title>User Diet Page</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    {{-- PDF Export JS --}}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
     <style>
-
         @font-face {
             font-family: 'Azarmehr';
             src: url('/fonts/AzarMehr/AzarMehr-Medium.ttf') format('truetype');
@@ -17,35 +13,21 @@
             font-style: normal;
         }
 
-        @media print {
-            body {
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-
-            #dietPage {
-                width: 794px; /* A4 width in pixels at 96dpi */
-                max-width: 100%;
-                margin: 0 auto;
-                font-size: 14px;
-                transform: scale(1);
-                transform-origin: top left;
-            }
-
-            .photo-grid {
-                grid-template-columns: repeat(4, 1fr); /* force 4 columns for photo log */
-            }
+        *, *::before, *::after {
+            box-sizing: border-box;
         }
 
         body {
             font-family: 'Azarmehr', sans-serif;
             margin: 0;
+            padding: 0;
             background: linear-gradient(to bottom, #e0f7fa, #e8f5e9);
             color: #2e7d32;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 794px; /* A4 width at 96dpi */
+            width: 100%;
             margin: 40px auto;
             background: #ffffff;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
@@ -54,10 +36,10 @@
         }
 
         h1, h2, h3, span {
-             font-family: 'Azarmehr', sans-serif;
-         }
+            font-family: 'Azarmehr', sans-serif;
+        }
 
-        .user-info, .photo-log {
+        .user-info {
             margin-top: 24px;
         }
 
@@ -70,7 +52,6 @@
             padding: 8px 12px;
             border-bottom: 1px solid #c8e6c9;
         }
-
 
         .photo-log {
             margin-top: 32px;
@@ -87,15 +68,6 @@
             height: auto;
             border-radius: 12px;
             border: 3px solid #aed581;
-        }
-
-        #dietPage {
-            page-break-inside: avoid;
-            break-inside: avoid;
-        }
-        * {
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
         }
 
         .btn-download {
@@ -118,37 +90,69 @@
         .logo-png {
             width: 50px;
             margin: 0 auto;
+            display: block;
+        }
+
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .btn-download {
+                display: none;
+            }
+
+            .container {
+                margin: 0;
+                box-shadow: none;
+                border-radius: 0;
+                padding: 50%;
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
 
 <div class="container" id="dietPage">
-    <img src="/photo/logo.png"  class="logo-png"/>
+    <img src="/photo/logo.png" class="logo-png" alt="Logo">
 
-    <div class="user-info" style="direction: rtl" >
-            {!! $content !!}
+    <div class="user-info" style="direction: rtl;">
+        {!! $content !!}
     </div>
 
-    <button class="btn-download" onclick="downloadPDF()"><span>دانلود فایل</span> PDF</button>
+    <button class="btn-download"  id="downloadBtn" onclick="downloadPDF()"><span>دانلود فایل</span> PDF</button>
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <script>
     function downloadPDF() {
         const element = document.getElementById('dietPage');
-        element.classList.add('pdf-export'); // if needed to apply special styles
+        const button = document.getElementById('downloadBtn');
+        button.style.display = 'none';
 
         const opt = {
-            margin:       0,
-            filename:     'user-diet.pdf',
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2, useCORS: true },
-            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-            pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+            margin: 0,
+            filename: 'user-diet.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: {
+                scale: 2,
+                useCORS: true,
+                scrollY: 0
+            },
+            jsPDF: {
+                unit: 'mm',
+                format: 'a4',
+                orientation: 'portrait'
+            },
+            pagebreak: { mode: ['css', 'legacy', 'avoid-all'] }
         };
 
         html2pdf().set(opt).from(element).save().then(() => {
-            element.classList.remove('pdf-export');
+            // Show the button again
+            button.style.display = 'block';
         });
     }
 </script>
