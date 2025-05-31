@@ -38,84 +38,14 @@ class AiJobDietMessage implements ShouldQueue
     {
         try {
             $htmlContent = Ai::sendMessage($this->data['chat'], $this->data['prompt'], $this->data['chat_id']);
-
-            $pdfPath = $this->generatePdf($htmlContent);
-
-            $this->telegramBot->sendDocument(
-                $this->data['user_telegram_id'],
-                $pdfPath,
-                'Here is your diet plan'
-            );
-
-            Storage::delete($pdfPath);
-
+            if ($htmlContent) {
+                $this->telegramBot->send(
+                    $this->data['user_telegram_id'],
+                    "https://calorieno.com/diet/user".$this->data['chat']."کاربر گرامی رژیم شما آماده شده است و از طریق لینک زیر اقدام نمایید نسبت به دیدن و ذخیره آن با تشکر",
+                );
+            }
         } catch (\Exception $exception) {
             throw new \Exception($exception->getMessage());
         }
     }
-    private function generatePdf(string $html): string
-    {
-        $options = new Options();
-        $options->set('isRemoteEnabled', true);
-        $options->set('isHtml5ParserEnabled', true);
-        $options->set('isPhpEnabled', true);
-        $options->set('isFontSubsettingEnabled', true); // Optimize font usage
-        $options->set('defaultFont', 'IRANSans'); // Set default font for Persian
-
-        // Specify custom font directory (if fonts are stored in storage/fonts/)
-        $options->set('fontDir', asset('fonts/'));
-        $options->set('fontCache', asset('fonts/'));
-
-        $dompdf = new Dompdf($options);
-
-        // Define Persian HTML with font and UTF-8 encoding
-        $persianHtml = '<!DOCTYPE html>
-<html dir="rtl" lang="fa">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <style>
-        @font-face {
-            font-family: "IRANSans";
-            src: url("' . asset('fonts/Yekan Bakh FaNum Medium.woff2') . '") format("truetype");
-            font-weight: normal;
-            font-style: normal;
-        }
-        * {
-            font-family: "IRANSans", sans-serif;
-            text-align: right;
-            direction: rtl;
-        }
-        body {
-            padding: 20px;
-            line-height: 1.6;
-            font-size: 14px;
-        }
-        h3, h4 {
-            color: #2c3e50;
-            font-family: "IRANSans", sans-serif;
-        }
-        ul {
-            padding-right: 20px;
-        }
-    </style>
-</head>
-<body>' . $html . '</body>
-</html>';
-
-        // Ensure HTML is UTF-8 encoded
-        $persianHtml = mb_convert_encoding($persianHtml, 'HTML-ENTITIES', 'UTF-8');
-
-        // Load HTML
-        $dompdf->loadHtml($persianHtml, 'UTF-8');
-        $dompdf->setPaper('A4', 'portrait');
-        $dompdf->render();
-
-        // Save PDF to storage
-        $filename = 'diet_plan_' . time() . '.pdf';
-        $path = $filename;
-
-        Storage::put($path, $dompdf->output());
-        return $path;
-    }
-
 }
