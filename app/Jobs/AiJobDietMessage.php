@@ -41,7 +41,7 @@ class AiJobDietMessage implements ShouldQueue
             if ($htmlContent) {
                 $this->telegramBot->send(
                     $this->data['user_telegram_id'],
-                    "https://calorieno.com/diet/user".$this->data['chat']."کاربر گرامی رژیم شما آماده شده است و از طریق لینک زیر اقدام نمایید نسبت به دیدن و ذخیره آن با تشکر",
+                    "https://calorieno.com/diet/user".$this->data['chat_id']."کاربر گرامی رژیم شما آماده شده است و از طریق لینک زیر اقدام نمایید نسبت به دیدن و ذخیره آن با تشکر",
                 );
             }
         } catch (\Exception $exception) {
