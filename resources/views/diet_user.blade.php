@@ -26,11 +26,11 @@
         }
 
         .container {
-            max-width: 794px; /* A4 width at 96dpi */
+            max-width: 794px;
             width: 100%;
             margin: 40px auto;
             background: #ffffff;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             border-radius: 16px;
             padding: 32px;
         }
@@ -39,8 +39,47 @@
             font-family: 'Azarmehr', sans-serif;
         }
 
+        .header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .logo-group {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .logo-png {
+            width: 50px;
+            height: auto;
+            display: block;
+        }
+
+        .btn-download {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-download:hover {
+            background-color: #388e3c;
+        }
+
         .user-info {
             margin-top: 24px;
+            direction: rtl;
         }
 
         .user-info table {
@@ -70,27 +109,10 @@
             border: 3px solid #aed581;
         }
 
-        .btn-download {
-            display: block;
-            margin: 30px auto 0;
-            background-color: #4caf50;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            font-size: 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn-download:hover {
-            background-color: #388e3c;
-        }
-
-        .logo-png {
-            width: 50px;
-            margin: 0 auto;
-            display: block;
+        @media (min-width: 600px) {
+            .header {
+                flex-direction: row;
+            }
         }
 
         @media print {
@@ -107,7 +129,7 @@
                 margin: 0;
                 box-shadow: none;
                 border-radius: 0;
-                padding: 50%;
+                padding: 0;
                 width: 100%;
             }
         }
@@ -116,17 +138,22 @@
 <body>
 
 <div class="container" id="dietPage">
-    <img src="/photo/logo.png" class="logo-png" alt="Logo">
-
-    <div class="user-info" style="direction: rtl;">
-        {!! $content !!}
+    <div class="header">
+        <button class="btn-download" id="downloadBtn" onclick="downloadPDF()">
+            <span>دانلود فایل</span> PDF
+        </button>
+        <div class="logo-group">
+            <img src="/photo/logo.png" class="logo-png" alt="Logo">
+            <img src="/photo/logo_text_1.png" class="logo-png" alt="Logo Text">
+        </div>
     </div>
 
-    <button class="btn-download"  id="downloadBtn" onclick="downloadPDF()"><span>دانلود فایل</span> PDF</button>
+    <div class="user-info">
+        {!! $content !!}
+    </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
 <script>
     function downloadPDF() {
         const element = document.getElementById('dietPage');
@@ -151,7 +178,6 @@
         };
 
         html2pdf().set(opt).from(element).save().then(() => {
-            // Show the button again
             button.style.display = 'block';
         });
     }
