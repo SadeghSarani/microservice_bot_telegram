@@ -139,13 +139,14 @@
 
 <div class="container" id="dietPage">
     <div class="header">
-        <button class="btn-download" id="downloadBtn" onclick="downloadPDF()">
-            <span>دانلود فایل</span> PDF
-        </button>
         <div class="logo-group">
             <img src="/photo/logo.png" class="logo-png" alt="Logo">
             <img src="/photo/logo_text_1.png" class="logo-png" alt="Logo Text">
         </div>
+
+        <button class="btn-download" id="downloadBtn" onclick="downloadPDF()">
+            <span>دانلود فایل</span> PDF
+        </button>
     </div>
 
     <div class="user-info">
