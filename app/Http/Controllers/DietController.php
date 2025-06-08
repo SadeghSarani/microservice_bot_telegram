@@ -171,20 +171,16 @@ class DietController extends Controller
             'description' => $package['name'],
         ]);
 
-        $userPay = UserPay::where('user_id', $user_id)->where('status', 'active')->first();
+        $userPay = UserPay::where('user_id', $user_id)
+            ->where('package_id', $package['id'])
+            ->where('status', 'active')->first();
 
         if ($userPay != null) {
-            if ($userPay->expired_at < now() || $userPay->count <= 0) {
-
-                $userPay->delete();
-            }
-        }
-
-        if ($userPay == null) {
+            $userPay->delete();
 
             UserPay::updateOrCreate([
                 'user_id' => $user_id,
-            ],[
+            ], [
                 'user_id' => $user_id,
                 'package_id' => $package->id,
                 'authority' => $urlPayment['authority'],
@@ -202,13 +198,7 @@ class DietController extends Controller
                 ]
             ], 'روی لینک پرداخت کلیک نمایید (vpn) خود را خاموش نمایید');
             return true;
-
-        } else {
-            $this->telegramBot->send($user_id, 'شما یک رژیم یه هفته ای دارین بعد از این یه هفته دوباره برگرد و رژیم جدیدت رو بگیر');
-
-            return true;
         }
-
     }
 
 }
