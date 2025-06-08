@@ -198,6 +198,29 @@ class DietController extends Controller
                 ]
             ], 'روی لینک پرداخت کلیک نمایید (vpn) خود را خاموش نمایید');
             return true;
+        }else{
+
+            UserPay::updateOrCreate([
+                'user_id' => $user_id,
+            ], [
+                'user_id' => $user_id,
+                'package_id' => $package->id,
+                'authority' => $urlPayment['authority'],
+                'status' => 'pending',
+                'count' => $package['count_request'],
+                'expired_at' => Carbon::now()->addDays(7)->format('Y-m-d H:i:s'),
+            ]);
+
+            $message = $package['description'];
+            $this->telegramBot->send($user_id, $message);
+            $this->telegramBot->createButtonInline($user_id, [
+                [
+                    'text' => 'لینک پرداخت',
+                    'url' => $urlPayment['url'],
+                ]
+            ], 'روی لینک پرداخت کلیک نمایید (vpn) خود را خاموش نمایید');
+
+            return true;
         }
     }
 
