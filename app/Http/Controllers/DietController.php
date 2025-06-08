@@ -7,18 +7,22 @@ use App\Jobs\AiJobSendMessage;
 use App\Models\ChatBot;
 use App\Models\Diet;
 use App\Models\DietUser;
+use App\Models\Package;
 use App\Models\Prompt;
 use App\Models\TelegramReplyKeyboard;
 use App\Models\TelegramUserLocation;
 use App\Models\UserPay;
 use App\Repositories\ChatBotRepository;
 use App\Service\TelegramBot;
+use App\Service\ZarinPalPayment;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Request;
 
 class DietController extends Controller
 {
     private TelegramBot $telegramBot;
+    private ChatBotRepository $chatRepo;
 
     public function __construct()
     {
@@ -111,7 +115,7 @@ class DietController extends Controller
             ]);
 
             $dietData = DietUser::where('user_id', $stepCurrentUser->user_id)->first();
-            $this->telegramBot->send($user_id, 'پایان سوالات رژيم ممنون از وقتی که گذاشتید نتیجه رژیم بعد از پردازش ارسال میگردد');
+//            $this->telegramBot->send($user_id, 'پایان سوالات رژيم ممنون از وقتی که گذاشتید نتیجه رژیم بعد از پردازش ارسال میگردد');
 
             $prompt = Prompt::where('service_id', 8)->first();
             $promptEntended = $prompt->prompt;
@@ -124,23 +128,26 @@ class DietController extends Controller
                 }
             }
 
-            $createChat = $this->chatRepo->create([
-                'user_id' => $user_id,
-                'service_id' => 8,
-                'context' => 'دریافت رژیم غذایی',
-            ]);
 
-
-            AiJobDietMessage::dispatch([
-                'chat' => $promptEntended,
-                'prompt' => $promptEntended,
-                'chat_id' => $createChat->id,
-                'user_telegram_id' => $user_id,
-            ])->delay(now()->seconds(20));
-
-            $dietData->delete();
+            $this->setPackage($user_id);
 
             return true;
+//            $createChat = $this->chatRepo->create([
+//                'user_id' => $user_id,
+//                'service_id' => 8,
+//                'context' => 'دریافت رژیم غذایی',
+//            ]);
+//
+//
+//            AiJobDietMessage::dispatch([
+//                'chat' => $promptEntended,
+//                'prompt' => $promptEntended,
+//                'chat_id' => $createChat->id,
+//                'user_telegram_id' => $user_id,
+//            ])->delay(now()->seconds(20));
+
+//            $dietData->delete();
+
         }
 
         DietUser::where('user_id', $user_id)->update([
@@ -150,6 +157,57 @@ class DietController extends Controller
 
         $this->telegramBot->send($user_id, $questionNext->question);
         return true;
+
+    }
+
+
+    public function setPackage($user_id)
+    {
+        $package = Package::query()->where('additional', 'diet')->first();
+        $zarinpal = new ZarinPalPayment();
+
+        $urlPayment = $zarinpal->payment([
+            'amount' => $package['price'],
+            'description' => $package['name'],
+        ]);
+
+        $userPay = UserPay::where('user_id', $user_id)->where('status', 'active')->first();
+
+        if ($userPay != null) {
+            if ($userPay->expired_at < now() || $userPay->count <= 0) {
+
+                $userPay->delete();
+            }
+        }
+
+        if ($userPay == null) {
+
+            UserPay::updateOrCreate([
+                'user_id' => $user_id,
+            ],[
+                'user_id' => $user_id,
+                'package_id' => $package->id,
+                'authority' => $urlPayment['authority'],
+                'status' => 'pending',
+                'count' => $package['count_request'],
+                'expired_at' => Carbon::now()->addDays(7)->format('Y-m-d H:i:s'),
+            ]);
+
+            $message = $package['description'];
+            $this->telegramBot->send($user_id, $message);
+            $this->telegramBot->createButtonInline($user_id, [
+                [
+                    'text' => 'لینک پرداخت',
+                    'url' => $urlPayment['url'],
+                ]
+            ], 'روی لینک پرداخت کلیک نمایید (vpn) خود را خاموش نمایید');
+            return true;
+
+        } else {
+            $this->telegramBot->send($user_id, 'شما یک رژیم یه هفته ای دارین بعد از این یه هفته دوباره برگرد و رژیم جدیدت رو بگیر');
+
+            return true;
+        }
 
     }
 
