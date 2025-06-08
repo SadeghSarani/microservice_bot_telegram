@@ -36,15 +36,15 @@ class DietController extends Controller
             ->where('package_id', 3)
             ->first();
 
-//        if ($user_id != 139826989) {
-//
-//            TelegramUserLocation::query()->where('telegram_user_id', $user_id)->update([
-//                'location' => TelegramReplyKeyboard::query()->where('title', '/start')->first()->id,
-//            ]);
-//
-//            $this->telegramBot->send($user_id, 'این سرویس به زودی قابل استفاده میشود لطفا از سرویس  های دیگه استفاده نمایید');
-//            return true;
-//        }
+        if ($user_id != 139826989) {
+
+            TelegramUserLocation::query()->where('telegram_user_id', $user_id)->update([
+                'location' => TelegramReplyKeyboard::query()->where('title', '/start')->first()->id,
+            ]);
+
+            $this->telegramBot->send($user_id, 'این سرویس به زودی قابل استفاده میشود لطفا از سرویس  های دیگه استفاده نمایید');
+            return true;
+        }
 
         $this->telegramBot->send($user_id, 'فقط چند قدم تا دریافت رژیم و شروع مسیر سلامتی باقی مونده! 😊
 💚 در ادامه چند سوال ازت پرسیده میشه و براساس اونا رژیم در اختیارت قرار میگیره. 
