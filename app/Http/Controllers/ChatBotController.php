@@ -82,7 +82,7 @@ class ChatBotController extends Controller
             return true;
         }
 
-        $result = $this->checkUserRequest($telegram_user_id);
+        $result = $this->checkUserRequest($telegram_user_id, $loc->service_id);
 
         if (!$result) {
             return true;
@@ -132,8 +132,13 @@ class ChatBotController extends Controller
         ]);
     }
 
-    private function checkUserRequest($telegram_user_id)
+    private function checkUserRequest($telegram_user_id, $location)
     {
+
+        if ($location == 2) {
+            return true;
+        }
+
         $userPackageData = UserPay::query()
             ->where('status', 'active')
             ->where('user_id', $telegram_user_id)->first();

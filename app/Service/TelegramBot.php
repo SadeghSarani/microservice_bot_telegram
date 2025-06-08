@@ -156,6 +156,27 @@ class TelegramBot
         ]);
     }
 
+    public function sendNotif($user_id, $text, $location)
+    {
+        $telegram_reply_keyboards = TelegramReplyKeyboard::where('parent_id', $location)
+            ->get();
+
+        $keyboard = Keyboard::make()
+            ->setResizeKeyboard(true);
+
+        foreach ($telegram_reply_keyboards as $value) {
+            $keyboard = $keyboard->row([
+                Keyboard::button(['text' => $value->title])
+            ]);
+        }
+
+        Telegram::sendMessage([
+            'chat_id' => $user_id,
+            'text' => $text,
+            'reply_markup' => $keyboard
+        ]);
+    }
+
     public function createButtonInline($user_id, $data, $text)
     {
         $telegram = new Api(env('TELEGRAM_BOT_TOKEN'));
