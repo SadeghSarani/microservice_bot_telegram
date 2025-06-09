@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\AiJobDietMessage;
+use App\Models\DietUser;
 use App\Models\Package;
 use App\Models\Prompt;
 use App\Models\UserPay;
@@ -59,10 +60,10 @@ class PayController extends Controller
                 'service_id' => 8,
                 'context' => 'دریافت رژیم غذایی',
             ]);
-
             $prompt = Prompt::where('service_id', 8)->first();
             $promptEntended = $prompt->prompt;
 
+            $dietData = DietUser::where('user_id', $userPay['user_id'])->first();
             $answers = $dietData->answers_user ?? [];
 
             foreach ($answers as $item) {
@@ -75,7 +76,7 @@ class PayController extends Controller
                 'chat' => $promptEntended,
                 'prompt' => $promptEntended,
                 'chat_id' => $createChat->id,
-                'user_telegram_id' => $amount['user_id'],
+                'user_telegram_id' => $userPay['user_id'],
             ])->delay(now()->seconds(20));
 
             $this->telegramBot->sendNotif($userPay['user_id'], 'کاربر گرامی نتیجه رژیم شما پس از پردازش برای شما ارسال خواهد شد', 1);
