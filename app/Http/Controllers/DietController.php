@@ -85,7 +85,7 @@ class DietController extends Controller
     {
         $stepCurrentUser = DietUser::where('user_id', $user_id)->first();
 
-        if ($stepCurrentUser != null && $stepCurrentUser->created_at < Carbon::now()->addMinutes(5)) {
+        if ($stepCurrentUser != null && $stepCurrentUser->created_at > Carbon::now()->addMinutes(5)) {
             $stepCurrentUser->delete();
             $question = Diet::where('question_step', 1)->first();
 
