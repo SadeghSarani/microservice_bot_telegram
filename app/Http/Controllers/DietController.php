@@ -85,7 +85,21 @@ class DietController extends Controller
     {
         $stepCurrentUser = DietUser::where('user_id', $user_id)->first();
 
-        if ($stepCurrentUser == null) {
+        if ($stepCurrentUser != null && $stepCurrentUser->created_at < Carbon::now()->addMinutes(5)) {
+            $stepCurrentUser->delete();
+            $question = Diet::where('question_step', 1)->first();
+
+            DietUser::create([
+                'user_id' => $user_id,
+                'diet_id' => $question->id,
+                'answers_user' => [],
+            ]);
+
+            $this->telegramBot->send($user_id, $question->question);
+            return true;
+        }
+
+        if ($stepCurrentUser == null ) {
             $question = Diet::where('question_step', 1)->first();
 
             DietUser::create([
@@ -115,7 +129,6 @@ class DietController extends Controller
             ]);
 
             $dietData = DietUser::where('user_id', $stepCurrentUser->user_id)->first();
-//            $this->telegramBot->send($user_id, 'پایان سوالات رژيم ممنون از وقتی که گذاشتید نتیجه رژیم بعد از پردازش ارسال میگردد');
 
             $prompt = Prompt::where('service_id', 8)->first();
             $promptEntended = $prompt->prompt;
