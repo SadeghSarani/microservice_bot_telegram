@@ -229,7 +229,7 @@ class DietController extends Controller
             $this->telegramBot->send($user_id, $message);
             $this->telegramBot->createButtonInline($user_id, [
                 [
-                    'text' => 'لینک پرداخت',
+                    'text' => '✅ لینک پرداخت',
                     'url' => $urlPayment['url'],
                 ]
             ], 'روی لینک پرداخت کلیک نمایید (vpn) خود را خاموش نمایید');
