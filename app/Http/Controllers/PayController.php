@@ -79,6 +79,7 @@ class PayController extends Controller
                 'user_telegram_id' => $userPay['user_id'],
             ])->delay(now()->seconds(20));
 
+            $dietData->delete();
             $this->telegramBot->sendNotif($userPay['user_id'], 'تبریک! 🎉 پرداخت شما انجام شد! رژیم شما در حال پردازش است و به زودی برای شما ارسال می شود. ⏳', 1);
 
             return view('calback');
