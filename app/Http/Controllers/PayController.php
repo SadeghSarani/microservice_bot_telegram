@@ -60,9 +60,9 @@ class PayController extends Controller
                 'service_id' => 8,
                 'context' => 'دریافت رژیم غذایی',
             ]);
-            $prompt = Prompt::where('service_id', 8)->first();
-            $promptEntended = $prompt->prompt;
+            $prompts = Prompt::where('service_id', 8)->get();
 
+            $promptEntended = '';
             $dietData = DietUser::where('user_id', $userPay['user_id'])->first();
             $answers = $dietData->answers_user ?? [];
 
@@ -74,7 +74,7 @@ class PayController extends Controller
 
             AiJobDietMessage::dispatch([
                 'chat' => $promptEntended,
-                'prompt' => $promptEntended,
+                'prompts' => $prompts,
                 'chat_id' => $createChat->id,
                 'user_telegram_id' => $userPay['user_id'],
             ])->delay(now()->seconds(20));
