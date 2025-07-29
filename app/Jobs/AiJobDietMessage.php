@@ -21,7 +21,7 @@ class AiJobDietMessage implements ShouldQueue
     private mixed $data;
     private TelegramBot $telegramBot;
     public int $tries = 30;
-    public int $timeout = 1200;
+    public int $timeout = 5000;
 
     public function __construct($data)
     {
@@ -36,19 +36,28 @@ class AiJobDietMessage implements ShouldQueue
 
     public function handle(): void
     {
-        try {
-            $htmlContent = Ai::sendMessage($this->data['chat'], '', $this->data['chat_id']);
-            if ($htmlContent) {
-                $this->telegramBot->send(
-                    $this->data['user_telegram_id'],
-                    "https://calorieno.com/diet/user/".$this->data['chat_id'].  "
+        $countPrompt = count($this->data['prompts']);
+        $count = 0;
+        while($countPrompt <= $count) {
+            try {
+                $chat = $this->data['prompts'][$count];
+                $chat .= $this->data['chat'];
+                $htmlContent = Ai::sendMessage($chat, '', $this->data['chat_id']);
+
+                if ($count == $countPrompt && $htmlContent) {
+                    $this->telegramBot->send(
+                        $this->data['user_telegram_id'],
+                        "https://calorieno.com/diet/user/".$this->data['chat_id'].  "
                     💚 #رژیم غذایی ۷ روزه کالری نو!
 🥝 از طریق لینک بالا می‌تونی رژیم ات رو‌ مشاهده کنی و در صورتی که نیاز به دریافت PDF داری، کافیه لینک را در مرورگر خودت کپی کنی و از گزینه دریافت PDF استفاده کنی.
 از 'کالری' کوچ یادت نره! 😍 تو یک متخصص تغذیه اختصاصی داری که در هر لحظه از شبانه روز کنارت هست و قرار هست در گرفتن رژیم کمکت کنه! 👌 کافیه هر زمان سوال داری از  منو گزینه 'کالری' کوچ رو انتخاب کنی!",
-                );
+                    );
+                }
+
+                $count++;
+            } catch (\Exception $exception) {
+                throw new \Exception($exception->getMessage());
             }
-        } catch (\Exception $exception) {
-            throw new \Exception($exception->getMessage());
         }
     }
 }
