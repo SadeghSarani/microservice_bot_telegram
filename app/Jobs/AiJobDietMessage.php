@@ -42,7 +42,7 @@ class AiJobDietMessage implements ShouldQueue
             try {
                 $chat = $this->data['prompts'][$count];
                 $chat .= $this->data['chat'];
-                $htmlContent = Ai::sendMessage($chat, '', $this->data['chat_id']);
+                $htmlContent = Ai::sendMessage($chat, 'این چت کاربر برای دریافت رژیم', $this->data['chat_id']);
 
                 if ($count == $countPrompt && $htmlContent) {
                     $this->telegramBot->send(
