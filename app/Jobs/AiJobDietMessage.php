@@ -38,19 +38,21 @@ class AiJobDietMessage implements ShouldQueue
     {
         $countPrompt = count($this->data['prompts']);
         $count = 0;
-        while ($countPrompt <= $count) {
+
+        while ($count < $countPrompt) {
             try {
                 $chat = $this->data['prompts'][$count];
                 $chat .= $this->data['chat'];
+
                 $htmlContent = Ai::sendMessage($chat, 'این چت کاربر برای دریافت رژیم', $this->data['chat_id']);
 
-                if ($count == $countPrompt && $htmlContent) {
+                if ($htmlContent && $count === ($countPrompt - 1)) {
                     $this->telegramBot->send(
                         $this->data['user_telegram_id'],
                         "https://app.calorieno.com/diet/user/" . $this->data['chat_id'] .  "
-                    💚 #رژیم غذایی ۷ روزه کالری نو!
+💚 #رژیم غذایی ۷ روزه کالری نو!
 🥝 از طریق لینک بالا می‌تونی رژیم ات رو‌ مشاهده کنی و در صورتی که نیاز به دریافت PDF داری، کافیه لینک را در مرورگر خودت کپی کنی و از گزینه دریافت PDF استفاده کنی.
-از 'کالری' کوچ یادت نره! 😍 تو یک متخصص تغذیه اختصاصی داری که در هر لحظه از شبانه روز کنارت هست و قرار هست در گرفتن رژیم کمکت کنه! 👌 کافیه هر زمان سوال داری از  منو گزینه 'کالری' کوچ رو انتخاب کنی!",
+از 'کالری' کوچ یادت نره! 😍 تو یک متخصص تغذیه اختصاصی داری که در هر لحظه از شبانه روز کنارت هست و قرار هست در گرفتن رژیم کمکت کنه! 👌 کافیه هر زمان سوال داری از  منو گزینه 'کالری' کوچ رو انتخاب کنی!"
                     );
                 }
 
