@@ -74,7 +74,6 @@ class TelegramBot
 برای دریافت مشاوره تغذیه با هوش مصنوعی، لطفاً سرویس مورد نظرتون را انتخاب کنید.☺️
 
 (استفاده از کالری‌نو به منزله موافقت با شرایط و ضوابط استفاده است.)');
-
     }
 
     public function NewMessage($message, $location, $allMessage)
@@ -97,10 +96,9 @@ class TelegramBot
             $locationData = TelegramUserLocation::where('telegram_user_id', $message['from']['id'])->first();
             $localData = TelegramReplyKeyboard::query()->where('id', $locationData->location)->first();
 
-            if ($localData->class == ChatBotController::class) {
+            if (isset($localData->class) && $localData->class == ChatBotController::class) {
                 $classInstance = new ChatBotController();
                 $classInstance->chatCreate($message['from']['id'], $message['text'], $locationData->location);
-
             } elseif ($localData->class == null || !empty($localData->class)) {
 
                 $classInstance = app($localData->class);
@@ -112,7 +110,6 @@ class TelegramBot
                 ]);
 
                 $classInstance->$func($message['from']['id'], $message['text'], $locationData->location);
-
             } else {
                 $this->error($message['from']['id'], 'لطفا یکی از دکمه ها را انتخاب کنید');
             }
@@ -128,7 +125,6 @@ class TelegramBot
         );
 
         $this->send($user_id, $text);
-
     }
 
     public function send($user_id, $text)
@@ -200,11 +196,11 @@ class TelegramBot
         [$controller, $function, $data] = explode('-', $callback_query['data']);
 
         switch ($controller) {
-            case 'package' :
+            case 'package':
                 $class = new PackageController();
                 $class->$function($user_id, $data);
                 break;
-            default :
+            default:
                 $telegram->sendMessage([
                     'chat_id' => $user_id,
                     'text' => 'انتخاب نادرست '
