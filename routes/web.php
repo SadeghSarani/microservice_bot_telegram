@@ -3,6 +3,10 @@
 use App\Http\Controllers\DietController;
 use App\Http\Controllers\PayController;
 use App\Http\Middleware\AdminMiddleware;
+use App\Jobs\AiJobDietMessage;
+use App\Models\ChatBot;
+use App\Models\DietUser;
+use App\Models\Prompt;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Illuminate\Support\Facades\Log;
@@ -50,4 +54,33 @@ Route::get('/terms', function () {
 })->name('terms');
 
 
-Route::any('pay/calback',[PayController::class,'calback'])->name('pay.calback');
+Route::any('pay/calback', [PayController::class, 'calback'])->name('pay.calback');
+
+
+Route::get('/test', function () {
+
+    $createChat = ChatBot::create([
+        'user_id' => 854529351,
+        'service_id' => 8,
+        'context' => 'دریافت رژیم غذایی',
+    ]);
+
+    $prompts = Prompt::where('service_id', 8)->get();
+
+    $promptEntended = '';
+    $dietData = DietUser::where('user_id', 854529351)->first();
+    $answers = $dietData->answers_user ?? [];
+
+    foreach ($answers as $item) {
+        foreach ($item as $question => $answer) {
+            $promptEntended .= "\n{$question}: {$answer}";
+        }
+    }
+
+    AiJobDietMessage::dispatch([
+        'chat' => $promptEntended,
+        'prompts' => $prompts,
+        'chat_id' => $createChat->id,
+        'user_telegram_id' => 854529351,
+    ])->delay(now()->seconds(20));
+});
