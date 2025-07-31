@@ -55,32 +55,3 @@ Route::get('/terms', function () {
 
 
 Route::any('pay/calback', [PayController::class, 'calback'])->name('pay.calback');
-
-
-Route::get('/test', function () {
-
-    $createChat = ChatBot::create([
-        'user_id' => 854529351,
-        'service_id' => 8,
-        'context' => 'دریافت رژیم غذایی',
-    ]);
-
-    $prompts = Prompt::where('service_id', 8)->get();
-
-    $promptEntended = '';
-    $dietData = DietUser::where('user_id', 854529351)->first();
-    $answers = $dietData->answers_user ?? [];
-
-    foreach ($answers as $item) {
-        foreach ($item as $question => $answer) {
-            $promptEntended .= "\n{$question}: {$answer}";
-        }
-    }
-
-    AiJobDietMessage::dispatch([
-        'chat' => $promptEntended,
-        'prompts' => $prompts,
-        'chat_id' => $createChat->id,
-        'user_telegram_id' => 854529351,
-    ])->delay(now()->seconds(20));
-});
