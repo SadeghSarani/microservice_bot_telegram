@@ -36,17 +36,18 @@ class AiJobDietMessage implements ShouldQueue
 
     public function handle(): void
     {
-        $countPrompt = count($this->data['prompts']);
-        $count = 0;
 
-        while ($count < $countPrompt) {
+        $prompts = $this->data['prompts'];
+        $total = count($prompts);
+
+        foreach ($prompts as $index => $prompt) {
+            sleep(10);
             try {
-                $chat = $this->data['prompts'][$count];
-                $chat .= $this->data['chat'];
+                $chat = $prompt . $this->data['chat'];
 
                 $htmlContent = Ai::sendMessage($chat, 'این چت کاربر برای دریافت رژیم', $this->data['chat_id']);
 
-                if ($htmlContent && $count === ($countPrompt - 1)) {
+                if ($htmlContent && $index === $total - 1) {
                     $this->telegramBot->send(
                         $this->data['user_telegram_id'],
                         "https://app.calorieno.com/diet/user/" . $this->data['chat_id'] .  "
@@ -55,8 +56,6 @@ class AiJobDietMessage implements ShouldQueue
 از 'کالری' کوچ یادت نره! 😍 تو یک متخصص تغذیه اختصاصی داری که در هر لحظه از شبانه روز کنارت هست و قرار هست در گرفتن رژیم کمکت کنه! 👌 کافیه هر زمان سوال داری از  منو گزینه 'کالری' کوچ رو انتخاب کنی!"
                     );
                 }
-
-                $count++;
             } catch (\Exception $exception) {
                 throw new \Exception($exception->getMessage());
             }

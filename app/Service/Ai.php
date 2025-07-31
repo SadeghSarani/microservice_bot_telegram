@@ -45,16 +45,17 @@ class Ai
             $userMessage .= $chatHistoryItem->context;
         }
 
-
-        $userChatData = new MessageData(
-            [
-                'role' => RoleType::USER,
-                'content' => "Here is the chat history: \n" . $userMessage .
-                    "\nNow, the user asks: " . $message .
-                    "\nIf the current question relies on past conversation, use the history in the response. " .
-                    "Otherwise, answer based only on the current question without referencing the history.",
-            ]
-        );
+        if ($chat->service_id != 8) {
+            $userChatData = new MessageData(
+                [
+                    'role' => RoleType::USER,
+                    'content' => "Here is the chat history: \n" . $userMessage .
+                        "\nNow, the user asks: " . $message .
+                        "\nIf the current question relies on past conversation, use the history in the response. " .
+                        "Otherwise, answer based only on the current question without referencing the history.",
+                ]
+            );
+        }
 
 
         $prompt = new MessageData([
@@ -64,7 +65,7 @@ class Ai
 
         $chatData = new ChatData([
             'messages' => [
-                $userChatData,
+                $userChatData ?? null,
                 $prompt,
             ],
             'model' => $model
@@ -73,10 +74,17 @@ class Ai
 
         try {
             $response = LaravelOpenRouter::chatRequest($chatData);
+            $answerAi = $response->choices[0]['message']['content'];
+            $answer = '';
 
             if ($chatBotId != null) {
+
+                if ($chat->answer != null) {
+                    $answer = $chat->answer;
+                }
+
                 ChatBot::where('id', $chatBotId)->update([
-                    'answer' => $response->choices[0]['message']['content'],
+                    'answer' => $answerAi . $answer,
                 ]);
             }
 
