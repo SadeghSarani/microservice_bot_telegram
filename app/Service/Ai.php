@@ -14,7 +14,6 @@ class Ai
 
     public static function sendMessage($message, $prompt, $chatBotId = null)
     {
-
         if ($chatBotId) {
             $chat = ChatBot::query()->where('id', $chatBotId)->first();
             $chatHistory = ChatBot::query()
@@ -37,7 +36,7 @@ class Ai
             }
         }
 
-        $model = \App\Models\Ai::query()->first()['name'];
+        $model = \App\Models\Ai::query()->first()['name'] ?? 'openai/gpt-4.1-mini';
 
         $userMessage = '';
 
@@ -45,17 +44,15 @@ class Ai
             $userMessage .= $chatHistoryItem->context;
         }
 
-        if ($chat->service_id != 8) {
-            $userChatData = new MessageData(
-                [
-                    'role' => RoleType::USER,
-                    'content' => "Here is the chat history: \n" . $userMessage .
-                        "\nNow, the user asks: " . $message .
-                        "\nIf the current question relies on past conversation, use the history in the response. " .
-                        "Otherwise, answer based only on the current question without referencing the history.",
-                ]
-            );
-        }
+        $userChatData = new MessageData(
+            [
+                'role' => RoleType::USER,
+                'content' => "Here is the chat history: \n" . $userMessage .
+                    "\nNow, the user asks: " . $message .
+                    "\nIf the current question relies on past conversation, use the history in the response. " .
+                    "Otherwise, answer based only on the current question without referencing the history.",
+            ]
+        );
 
 
         $prompt = new MessageData([
@@ -65,7 +62,7 @@ class Ai
 
         $chatData = new ChatData([
             'messages' => [
-                $userChatData ?? null,
+                $userChatData,
                 $prompt,
             ],
             'model' => $model
@@ -75,6 +72,7 @@ class Ai
         try {
             $response = LaravelOpenRouter::chatRequest($chatData);
             $answerAi = $response->choices[0]['message']['content'];
+
             $answer = '';
 
             if ($chatBotId != null) {

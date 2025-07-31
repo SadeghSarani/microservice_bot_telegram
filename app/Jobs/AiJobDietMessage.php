@@ -38,10 +38,10 @@ class AiJobDietMessage implements ShouldQueue
     {
 
         $prompts = $this->data['prompts'];
-        $total = count($prompts);
-
+        $total = $prompts->count();
         foreach ($prompts as $index => $prompt) {
             sleep(10);
+
             try {
                 $chat = $prompt . $this->data['chat'];
 
