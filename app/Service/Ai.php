@@ -34,6 +34,10 @@ class Ai
                 $message = 'کالری پروتئین چربی کل کربوهیدرات کل فیبر غذایی قند سدیم ویتامین‌ها و مواد معدنی کلیدی
 و  ترکیبات دیگر مثل آنتی‌اکسیدان‌ها، کلسترول، اسید های چرب و...  ' . $message . ' رو بهم بگو و بگو چقدر سالم یا مضر هست واسه سلامتی؟';
             }
+
+            if($chat->service_id == 8) {
+                $message = 'فقط به پرامپت و جواب توجه کن';
+            }
         }
 
         $model = \App\Models\Ai::query()->first()['name'] ?? 'openai/gpt-4.1-mini';
@@ -44,16 +48,27 @@ class Ai
             $userMessage .= $chatHistoryItem->context;
         }
 
-        $userChatData = new MessageData(
-            [
-                'role' => RoleType::USER,
-                'content' => "Here is the chat history: \n" . $userMessage .
-                    "\nNow, the user asks: " . $message .
-                    "\nIf the current question relies on past conversation, use the history in the response. " .
-                    "Otherwise, answer based only on the current question without referencing the history.",
-            ]
-        );
 
+        if (isset($chat) && $chat->service_id == 8) {
+
+            $userChatData = new MessageData(
+                [
+                    'role' => RoleType::USER,
+                    'content' => $message
+                ]
+            );
+
+        }else {
+            $userChatData = new MessageData(
+                [
+                    'role' => RoleType::USER,
+                    'content' => "Here is the chat history: \n" . $userMessage .
+                        "\nNow, the user asks: " . $message .
+                        "\nIf the current question relies on past conversation, use the history in the response. " .
+                        "Otherwise, answer based only on the current question without referencing the history.",
+                ]
+            );
+        }
 
         $prompt = new MessageData([
             'role' => RoleType::ASSISTANT,
@@ -72,7 +87,6 @@ class Ai
         try {
             $response = LaravelOpenRouter::chatRequest($chatData);
             $answerAi = $response->choices[0]['message']['content'];
-
             $answer = '';
 
             if ($chatBotId != null) {
