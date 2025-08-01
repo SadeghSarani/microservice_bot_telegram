@@ -54,7 +54,7 @@ class Ai
             $userChatData = new MessageData(
                 [
                     'role' => RoleType::USER,
-                    'content' => $message
+                    'content' => $userMessage . $message
                 ]
             );
 
