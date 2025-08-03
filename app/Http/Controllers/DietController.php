@@ -36,16 +36,6 @@ class DietController extends Controller
             ->where('package_id', 3)
             ->first();
 
-        if ($user_id != 139826989) {
-
-            TelegramUserLocation::query()->where('telegram_user_id', $user_id)->update([
-                'location' => TelegramReplyKeyboard::query()->where('title', '/start')->first()->id,
-            ]);
-
-            $this->telegramBot->send($user_id, 'این سرویس به زودی قابل استفاده میشود لطفا از سرویس  های دیگه استفاده نمایید');
-            return true;
-        }
-
         $this->telegramBot->send($user_id, 'فقط چند قدم تا دریافت رژیم و شروع مسیر سلامتی باقی مونده! 😊
 💚 در ادامه چند سوال ازت پرسیده میشه و براساس اونا رژیم در اختیارت قرار میگیره. 
 ⭕️ در صورتی که پاسخ سوالی رو نداری،کلمه "ندارم" رو وارد کن و به سوال بعدی برو.
@@ -78,7 +68,6 @@ class DietController extends Controller
         $this->telegramBot->send($user_id, 'بازگشت به منوی اصلی');
 
         return true;
-
     }
 
     public function dietStart($user_id, $text, $loc)
@@ -99,7 +88,7 @@ class DietController extends Controller
             return true;
         }
 
-        if ($stepCurrentUser == null ) {
+        if ($stepCurrentUser == null) {
             $question = Diet::where('question_step', 1)->first();
 
             DietUser::create([
@@ -145,21 +134,21 @@ class DietController extends Controller
             $this->setPackage($user_id);
 
             return true;
-//            $createChat = $this->chatRepo->create([
-//                'user_id' => $user_id,
-//                'service_id' => 8,
-//                'context' => 'دریافت رژیم غذایی',
-//            ]);
-//
-//
-//            AiJobDietMessage::dispatch([
-//                'chat' => $promptEntended,
-//                'prompt' => $promptEntended,
-//                'chat_id' => $createChat->id,
-//                'user_telegram_id' => $user_id,
-//            ])->delay(now()->seconds(20));
+            //            $createChat = $this->chatRepo->create([
+            //                'user_id' => $user_id,
+            //                'service_id' => 8,
+            //                'context' => 'دریافت رژیم غذایی',
+            //            ]);
+            //
+            //
+            //            AiJobDietMessage::dispatch([
+            //                'chat' => $promptEntended,
+            //                'prompt' => $promptEntended,
+            //                'chat_id' => $createChat->id,
+            //                'user_telegram_id' => $user_id,
+            //            ])->delay(now()->seconds(20));
 
-//            $dietData->delete();
+            //            $dietData->delete();
 
         }
 
@@ -170,7 +159,6 @@ class DietController extends Controller
 
         $this->telegramBot->send($user_id, $questionNext->question);
         return true;
-
     }
 
 
@@ -212,7 +200,7 @@ class DietController extends Controller
             ], '👈 ابتدا فیلتر شکن (vpn) خود را خاموش نمایید.
 سپس روی لینک پرداخت کلیک نمایید و پرداخت را انجام دهید.👇');
             return true;
-        }else{
+        } else {
 
             UserPay::updateOrCreate([
                 'user_id' => $user_id,
@@ -238,5 +226,4 @@ class DietController extends Controller
             return true;
         }
     }
-
 }
