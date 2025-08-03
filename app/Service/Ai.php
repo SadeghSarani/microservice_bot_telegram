@@ -34,7 +34,6 @@ class Ai
                 $message = 'کالری پروتئین چربی کل کربوهیدرات کل فیبر غذایی قند سدیم ویتامین‌ها و مواد معدنی کلیدی
 و  ترکیبات دیگر مثل آنتی‌اکسیدان‌ها، کلسترول، اسید های چرب و...  ' . $message . ' رو بهم بگو و بگو چقدر سالم یا مضر هست واسه سلامتی؟';
             }
-
         }
 
         $model = \App\Models\Ai::query()->first()['name'] ?? 'openai/gpt-4.1-mini';
@@ -51,11 +50,10 @@ class Ai
             $userChatData = new MessageData(
                 [
                     'role' => RoleType::USER,
-                    'content' => $userMessage . $message
+                    'content' => $message
                 ]
             );
-
-        }else {
+        } else {
             $userChatData = new MessageData(
                 [
                     'role' => RoleType::USER,
