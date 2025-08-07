@@ -21,7 +21,7 @@ class AiJobDietMessage implements ShouldQueue
     private mixed $data;
     private TelegramBot $telegramBot;
     public int $tries = 30;
-    public int $timeout = 5000;
+    public int $timeout = 20000000000;
 
     public function __construct($data)
     {
