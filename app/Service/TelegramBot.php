@@ -106,6 +106,10 @@ class TelegramBot
                 $classInstance->chatCreate($message['from']['id'], $message['text'], $locationData->location);
             } elseif ( !isset($localData->class) || $localData->class == null || !empty($localData->class)) {
 
+                if ($localData == null || !isset($localData->class)) {
+                    $this->error($message['from']['id'], 'لطفا یکی از دکمه ها را انتخاب کنید');
+                }
+
                 $classInstance = app($localData->class);
                 $func = $localData->action;
 
