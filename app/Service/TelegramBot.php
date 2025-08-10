@@ -86,6 +86,7 @@ class TelegramBot
         }
 
 
+
         if (isset($telegram_reply_keyboards->id)) {
             $classInstance = app($telegram_reply_keyboards->class);
             $action = $telegram_reply_keyboards->action;
@@ -95,10 +96,14 @@ class TelegramBot
             $locationData = TelegramUserLocation::where('telegram_user_id', $message['from']['id'])->first();
             $localData = TelegramReplyKeyboard::query()->where('id', $locationData->location)->first();
 
+            if ($locationData == null) {
+                $this->error($message['from']['id'], 'لطفا یکی از دکمه ها را انتخاب کنید');
+            }
+
             if (isset($localData->class) && $localData->class == ChatBotController::class) {
                 $classInstance = new ChatBotController();
                 $classInstance->chatCreate($message['from']['id'], $message['text'], $locationData->location);
-            } elseif ($localData->class == null || !empty($localData->class)) {
+            } elseif ( !isset($localData->class) || $localData->class == null || !empty($localData->class)) {
 
                 $classInstance = app($localData->class);
                 $func = $localData->action;
