@@ -125,7 +125,7 @@ class TelegramBot
 //    }
 
 
-    public function NewMessage(array $message, $location, array $allMessage): void
+    public function NewMessage($message, $location, $allMessage): void
     {
         /* ----------------------------------------------------------
          * 1️⃣  Callback query – invoked when the bot receives a
