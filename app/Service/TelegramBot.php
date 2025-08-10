@@ -125,7 +125,7 @@ class TelegramBot
 //    }
 
 
-    public function NewMessage($message, $location, $allMessage): void
+    public function NewMessage($message, $location, $allMessage)
     {
         /* ----------------------------------------------------------
          * 1️⃣  Callback query – invoked when the bot receives a
@@ -156,11 +156,13 @@ class TelegramBot
             return;
         }
 
-        $className = $replyKeyboard->class;   // fully‑qualified class name
+        $className = $replyKeyboard->class;
 
-        /* ----------------------------------------------------------
-         * 3️⃣  Verify that a class name exists and the class can be resolved
-         * ---------------------------------------------------------- */
+        if ($className === \App\Http\Controllers\ChatBotController::class) {
+            return (new \App\Http\Controllers\ChatBotController())
+                ->chatCreate($message['from']['id'], $message['text'], $location);
+        }
+
         if (empty($className) || !class_exists($className)) {
             Log::warning('Telegram reply keyboard has an invalid class name', [
                 'keyboard_id'      => $replyKeyboard->id,
