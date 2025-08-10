@@ -95,7 +95,7 @@ class TelegramBot
         } else {
             $locationData = TelegramUserLocation::where('telegram_user_id', $message['from']['id'])->first();
 
-            if ($locationData == null) {
+            if ($locationData == null || !isset($locationData->location)) {
                 $this->error($message['from']['id'], 'لطفا یکی از دکمه ها را انتخاب کنید');
             }
 
