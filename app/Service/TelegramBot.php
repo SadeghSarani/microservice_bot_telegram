@@ -159,15 +159,15 @@ class TelegramBot
         $className = $replyKeyboard->class;
 
         if ($className === \App\Http\Controllers\ChatBotController::class) {
-            return (new \App\Http\Controllers\ChatBotController())
-                ->chatCreate($message['from']['id'], $message['text'], $location);
+            $classInstance = new ChatBotController();
+            $classInstance->chatCreate($message['from']['id'], $message['text'], $location);
         }
 
         if (empty($className) || !class_exists($className)) {
             Log::warning('Telegram reply keyboard has an invalid class name', [
-                'keyboard_id'      => $replyKeyboard->id,
-                'title'            => $replyKeyboard->title,
-                'class'            => $className,
+                'keyboard_id' => $replyKeyboard->id,
+                'title' => $replyKeyboard->title,
+                'class' => $className,
             ]);
 
             $this->error($message['from']['id'], 'لطفا یکی از دکمه ها را انتخاب کنید');
@@ -178,11 +178,11 @@ class TelegramBot
          * 4️⃣  Resolve the class and invoke the configured action
          * ---------------------------------------------------------- */
         $classInstance = App::make($className);
-        $action        = $replyKeyboard->action;
+        $action = $replyKeyboard->action;
 
         if (!method_exists($classInstance, $action)) {
             Log::warning('Telegram reply keyboard action does not exist', [
-                'class'  => $className,
+                'class' => $className,
                 'action' => $action,
             ]);
 
@@ -208,6 +208,7 @@ class TelegramBot
         // ...
 
     }
+
     public function error($user_id, $text)
     {
         TelegramUserLocation::updateOrCreate(
