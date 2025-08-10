@@ -161,6 +161,7 @@ class TelegramBot
         if ($className === \App\Http\Controllers\ChatBotController::class) {
             $classInstance = new ChatBotController();
             $classInstance->chatCreate($message['from']['id'], $message['text'], $location);
+            return;
         }
 
         if (empty($className) || !class_exists($className)) {
