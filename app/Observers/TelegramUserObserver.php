@@ -10,18 +10,8 @@ class TelegramUserObserver
     /**
      * Handle the TelegramUser "created" event.
      */
-    public function created(TelegramUser $telegramUser): void
-    {
-        UserPay::create([
-            'user_id' => $telegramUser->user_id,
-            'package_id' => 0,
-            'authority' => '',
-            'status' => 'active',
-            'count' => 100,
-            'expired_at' => now()->addDays(7)
-        ]);
-    }
-    
+    public function created(TelegramUser $telegramUser): void {}
+
     public function updated(TelegramUser $telegramUser): void
     {
         //
