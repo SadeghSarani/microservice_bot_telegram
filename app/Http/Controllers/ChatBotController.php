@@ -144,7 +144,7 @@ class ChatBotController extends Controller
             ->where('status', 'active')
             ->where('user_id', $telegram_user_id)->first();
 
-        if ($userPackageData == null) {
+        if ($userPackageData == null || !$userPackageData || empty($userPackageData)) {
             $this->telegramBot->send($telegram_user_id, '👈برای استفاده از این سرویس لطفا ابتدا رژیم غذایی خود را دریافت کنید.
 💚 برای دریافت رژیم از طریق گزینه “دریافت رژیم غذایی”  در منو اقدام کنید');
 
