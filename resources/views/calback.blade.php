@@ -29,8 +29,8 @@
         <div class="success-message">
             <div class="success-icon">✓</div>
             <h1 class="mt-3">پرداخت با موفقیت انجام شد</h1>
-            <p>با تشکر از پرداخت شما، حساب کاربری شما شارژ شد. برای بررسی اعتبار خود گزینه اعتبار من رو بررسی کنید.</p>
-            <a href="https://t.me/Calorieno_bot" class="btn btn-success mt-4">بازگشت به کالرینو در تلگرام</a>
+            <p>با تشکر از پرداخت شما،برای دریافت رژیم به کالری نو در تلگرام بازگردید.</p>
+            <a href="https://t.me/Calorieno_bot" class="btn btn-success mt-4" style="color:#2ECC71">بازگشت به کالری نو در تلگرام</a>
         </div>
     </div>
 </body>
