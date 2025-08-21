@@ -190,8 +190,7 @@ class DietController extends Controller
                 'expired_at' => Carbon::now()->addDays(7)->format('Y-m-d H:i:s'),
             ]);
 
-            $message = $package['description'];
-            $this->telegramBot->send($user_id, $message);
+
             $this->telegramBot->createButtonInline($user_id, [
                 [
                     'text' => '✅ پرداخت و دریافت رژیم',
